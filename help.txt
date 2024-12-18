@@ -1,0 +1,86 @@
+
+
+Check the Go installation:
+
+go version
+
+Step 1: Initialize Your Project
+
+
+...................................
+mkdir beego-project && cd beego-project
+go mod init beego-project
+.....................................
+Step 2: Install Beego
+
+Use the go get command to install Beego:
+..............................................
+go get github.com/beego/beego/v2
+..............................................
+Step 3: Install Bee CLI (Optional but Recommended)
+
+Bee CLI helps in creating and running Beego projects:
+.................................................................................
+go install github.com/beego/bee/v2@latest
+.................................................................................
+Ensure the bee command is available:
+............................................
+bee version
+...............................................
+Step 4: Create a Beego Project
+
+To create a new Beego project using the Bee CLI:
+........................................................................
+bee new my-beego-app
+cd my-beego-app
+........................................................
+Step 5: Run the Application
+
+Run the Beego application:
+.................................................
+bee run
+........................................................
+Open your browser and navigate to http://localhost:8080 to see the Beego default page.
+Step 6: Explore Beego
+
+Start modifying the generated project structure to build your application. Refer to the official Beego documentation for advanced features and configurations.
+
+Let me know if you face any issues! 😊
+You said:
+Set up the Go environment variables:
+
+    GOPATH: Your workspace directory.
+    PATH: Add $GOPATH/bin to your PATH.
+
+how to do it
+ChatGPT said:
+ChatGPT
+
+Setting up the Go environment variables depends on your operating system. Here's how you can do it for different platforms:
+For Linux and macOS
+
+    Open a terminal.
+    Edit your shell configuration file:
+        For bash:
+`````````````````
+nano ~/.bashrc
+`````````````````````````````
+
+For zsh:
+
+    nano ~/.zshrc
+
+Add the following lines to set GOPATH and update PATH:
+..............................................................................
+export GOPATH=$HOME/go
+export PATH=$PATH:$GOPATH/bin
+..............................................................................
+Save the file and reload your shell:
+................................................................................
+source ~/.bashrc   # or ~/.zshrc
+.................................................................................
+Verify the setup:
+................................
+echo $GOPATH
+echo $PATH
+.........................
