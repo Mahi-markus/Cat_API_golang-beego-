@@ -225,14 +225,59 @@ func (c *CatController) Favs() {
 
 func (c *CatController) Vote() {
 	vote := c.GetString("vote")
+
+	// Handle the vote action
 	if vote == "up" {
-		c.Ctx.WriteString("You liked the cat! 😺")
+		c.Redirect("/", 302)
 	} else if vote == "down" {
-		c.Ctx.WriteString("You disliked the cat! 😿")
+		c.Redirect("/", 302)
 	} else {
 		c.Ctx.Abort(400, "Invalid vote")
+		return
 	}
+
+	// // Fetch a new random cat image
+	// apiKey := loadAPIKey()
+	// apiURL := "https://api.thecatapi.com/v1/images/search"
+	// req, err := http.NewRequest("GET", apiURL, nil)
+	// if err != nil {
+	// 	c.Ctx.Abort(500, "Internal Server Error")
+	// 	return
+	// }
+	// req.Header.Add("x-api-key", apiKey)
+
+	// client := &http.Client{}
+	// resp, err := client.Do(req)
+	// if err != nil {
+	// 	c.Ctx.Abort(500, "Failed to fetch random image")
+	// 	return
+	// }
+	// defer resp.Body.Close()
+
+	// body, err := ioutil.ReadAll(resp.Body)
+	// if err != nil {
+	// 	c.Ctx.Abort(500, "Failed to read response")
+	// 	return
+	// }
+
+	// var images []CatImage
+	// json.Unmarshal(body, &images)
+
+	// if len(images) > 0 {
+	// 	// Send the new image URL as a response
+	// 	newImageURL := images[0].URL
+	// 	c.Data["json"] = map[string]interface{}{
+	// 		"message":      fmt.Sprintf("You %s the cat!", vote),
+	// 		"new_image_url": newImageURL,
+	// 	}
+	// 	c.ServeJSON()
+	// } else {
+	// 	c.Ctx.Abort(500, "Failed to retrieve new image")
+	// }
 }
+
+
+
 
 
 
