@@ -21,10 +21,11 @@
             padding: 20px;
         }
         img {
-            max-width: 100%;
-            border-radius: 10px;
+            width: 100%;
+            height: 400px;
+            object-fit: cover;
+            border-radius: 5px;
         }
-       
         .button-row {
             display: flex;
             justify-content: space-between;
@@ -51,19 +52,24 @@
             cursor: pointer;
             color: #555;
             margin: 0 5px;
+            transition: transform 0.2s ease, color 0.2s ease;
         }
         button:hover {
             color: orange;
+            transform: scale(1.2); /* Slightly enlarges the button */
+        }
+        button:active {
+            transform: scale(1); /* Resets the size when the button is clicked */
         }
     </style>
 </head>
 <body>
-  
 
     <div class="container">
+        <!-- Include Navbar -->
+        {{template "navbar.tpl"}}
+        
         <!-- Display Image -->
-      <!-- Include Navbar -->
-    {{template "navbar.tpl"}}
         <div>
             <img src="{{.ImageURL}}" alt="Cat Image">
         </div>
@@ -74,15 +80,15 @@
             <div class="love-button">
                 <form action="/cat/love" method="POST">
                     <input type="hidden" name="image_url" value="{{.ImageURL}}">
-                    <button type="submit">❤️</button>
+                    <button type="submit" title="Love">❤️</button>
                 </form>
             </div>
 
             <!-- Like/Dislike Buttons -->
             <div class="like-dislike-buttons">
                 <form action="/cat/vote" method="POST">
-                    <button type="submit" name="vote" value="up">👍</button>
-                    <button type="submit" name="vote" value="down">👎</button>
+                    <button type="submit" name="vote" value="up" title="Like">👍</button>
+                    <button type="submit" name="vote" value="down" title="Dislike">👎</button>
                 </form>
             </div>
         </div>
