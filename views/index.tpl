@@ -38,18 +38,34 @@
         .nav a.active {
             color: orange;
         }
-        .footer-icons {
+        .button-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             margin-top: 10px;
         }
-        .footer-icons button {
+        .love-button, .like-dislike-buttons {
+            display: flex;
+            align-items: center;
+        }
+        .love-button form, .like-dislike-buttons form {
+            margin: 0;
+        }
+        .love-button {
+            margin-right: auto;
+        }
+        .like-dislike-buttons {
+            margin-left: auto;
+        }
+        button {
             background: none;
             border: none;
             font-size: 24px;
             cursor: pointer;
-            margin: 0 10px;
             color: #555;
+            margin: 0 5px;
         }
-        .footer-icons button:hover {
+        button:hover {
             color: orange;
         }
     </style>
@@ -68,13 +84,25 @@
             <img src="{{.ImageURL}}" alt="Cat Image">
         </div>
 
-        <!-- Like/Dislike Icons -->
-        <div class="footer-icons">
-            <form action="/cat/vote" method="POST">
-                <button type="submit" name="vote" value="up">👍</button>
-                <button type="submit" name="vote" value="down">👎</button>
-            </form>
+        <!-- Buttons Row -->
+        <div class="button-row">
+            <!-- Love Button -->
+            <div class="love-button">
+                <form action="/cat/love" method="POST">
+                    <input type="hidden" name="image_url" value="{{.ImageURL}}">
+                    <button type="submit">❤️</button>
+                </form>
+            </div>
+
+            <!-- Like/Dislike Buttons -->
+            <div class="like-dislike-buttons">
+                <form action="/cat/vote" method="POST">
+                    <button type="submit" name="vote" value="up">👍</button>
+                    <button type="submit" name="vote" value="down">👎</button>
+                </form>
+            </div>
         </div>
     </div>
 </body>
 </html>
+

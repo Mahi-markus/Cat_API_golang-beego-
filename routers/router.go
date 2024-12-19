@@ -12,4 +12,6 @@ func init() {
 	beego.Router("/cat/favs", &controllers.CatController{}, "get:Favs")
 	beego.Router("/cat/vote", &controllers.CatController{}, "post:Vote")
 	beego.Router("/cat/breed_images", &controllers.CatController{}, "get:BreedImages")
+	beego.Router("/cat/love", &controllers.CatController{}, "post:Love")
+
 }

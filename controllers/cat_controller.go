@@ -164,8 +164,14 @@ func (c *CatController) BreedImages() {
 	c.TplName = "breed_images.tpl"
 }
 
+
+var lovedImages []string
+
 func (c *CatController) Favs() {
-	c.Ctx.WriteString("Favorites Page - Work in Progress")
+	
+
+	c.Data["LovedImages"] = lovedImages
+    c.TplName = "favs.tpl"
 }
 
 func (c *CatController) Vote() {
@@ -177,4 +183,16 @@ func (c *CatController) Vote() {
 	} else {
 		c.Ctx.Abort(400, "Invalid vote")
 	}
+}
+
+
+
+func (c *CatController) Love() {
+    imageURL := c.GetString("image_url")
+    if imageURL != "" {
+        lovedImages = append(lovedImages, imageURL)
+        c.Redirect("/", 302)
+    } else {
+        c.Ctx.Abort(400, "Invalid image URL")
+    }
 }
