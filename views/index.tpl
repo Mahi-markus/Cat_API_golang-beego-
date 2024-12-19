@@ -24,20 +24,7 @@
             max-width: 100%;
             border-radius: 10px;
         }
-        .nav {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 20px;
-        }
-        .nav a {
-            text-decoration: none;
-            color: #333;
-            font-weight: bold;
-            font-size: 16px;
-        }
-        .nav a.active {
-            color: orange;
-        }
+       
         .button-row {
             display: flex;
             justify-content: space-between;
@@ -71,15 +58,12 @@
     </style>
 </head>
 <body>
-    <div class="container">
-        <!-- Navigation Buttons -->
-        <div class="nav">
-            <a href="/cat/voting" class="active">Voting</a>
-            <a href="/cat/breeds">Breeds</a>
-            <a href="/cat/favs">Favs</a>
-        </div>
+  
 
+    <div class="container">
         <!-- Display Image -->
+      <!-- Include Navbar -->
+    {{template "navbar.tpl"}}
         <div>
             <img src="{{.ImageURL}}" alt="Cat Image">
         </div>
@@ -105,4 +89,3 @@
     </div>
 </body>
 </html>
-

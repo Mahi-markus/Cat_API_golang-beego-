@@ -11,14 +11,16 @@
             background-color: #f9f9f9;
             margin: 0;
             padding: 0;
+            
         }
         h1 {
             margin: 20px 0;
+            margin-up: 20px
         }
         .slideshow-container {
             position: relative;
             max-width: 600px;
-            margin: auto;
+            margin: 50px auto;
         }
         .slide {
             display: none;
@@ -90,8 +92,10 @@
     </style>
 </head>
 <body>
-    <h1>Breed Images</h1>
+    
     <div class="slideshow-container">
+    <!-- Include Navbar -->
+     {{template "navbar.tpl"}}
         {{range .Images}}
         <div class="slide">
             <img src="{{.URL}}" alt="Cat Image">
