@@ -19,6 +19,9 @@ type CatController struct {
 type CatBreed struct {
 	ID   string `json:"id"`
 	Name string `json:"name"`
+	Origin      string `json:"origin"`
+    Description string `json:"description"`
+    WikipediaURL string `json:"wikipedia_url"`
 }
 
 type CatImage struct {
@@ -73,34 +76,37 @@ func (c *CatController) Get() {
 }
 
 func (c *CatController) Voting() {
-	apiKey := loadAPIKey()
-	apiURL := "https://api.thecatapi.com/v1/images/search"
+	// apiKey := loadAPIKey()
+	// apiURL := "https://api.thecatapi.com/v1/images/search"
 
-	req, err := http.NewRequest("GET", apiURL, nil)
-	if err != nil {
-		c.Ctx.Abort(500, "Internal Server Error")
-		return
-	}
-	req.Header.Add("x-api-key", apiKey)
+	// req, err := http.NewRequest("GET", apiURL, nil)
+	// if err != nil {
+	// 	c.Ctx.Abort(500, "Internal Server Error")
+	// 	return
+	// }
+	// req.Header.Add("x-api-key", apiKey)
 
-	client := &http.Client{}
-	resp, err := client.Do(req)
-	if err != nil {
-		c.Ctx.Abort(500, "Failed to fetch image")
-		return
-	}
-	defer resp.Body.Close()
+	// client := &http.Client{}
+	// resp, err := client.Do(req)
+	// if err != nil {
+	// 	c.Ctx.Abort(500, "Failed to fetch image")
+	// 	return
+	// }
+	// defer resp.Body.Close()
 
-	body, _ := ioutil.ReadAll(resp.Body)
-	var images []CatImage
-	json.Unmarshal(body, &images)
+	// body, _ := ioutil.ReadAll(resp.Body)
+	// var images []CatImage
+	// json.Unmarshal(body, &images)
 
-	if len(images) > 0 {
-		c.Data["ImageURL"] = images[0].URL
-	} else {
-		c.Data["ImageURL"] = ""
-	}
-	c.TplName = "index.tpl"
+	// if len(images) > 0 {
+	// 	c.Data["ImageURL"] = images[0].URL
+	// } else {
+	// 	c.Data["ImageURL"] = ""
+	// }
+	// c.TplName = "index.tpl"
+
+
+	c.Redirect("/", 302)
 }
 
 func (c *CatController) Breeds() {
@@ -133,35 +139,78 @@ func (c *CatController) Breeds() {
 
 func (c *CatController) BreedImages() {
 	apiKey := loadAPIKey()
-	breedID := c.GetString("id")
-	if breedID == "" {
-		c.Ctx.WriteString("Invalid breed ID")
-		return
-	}
+    breedID := c.GetString("id")
+    if breedID == "" {
+        c.Ctx.WriteString("Invalid breed ID")
+        return
+    }
 
-	apiURL := fmt.Sprintf("https://api.thecatapi.com/v1/images/search?breed_ids=%s&limit=5", breedID)
-	response, err := http.Get(apiURL + "&api_key=" + apiKey)
-	if err != nil {
-		c.Ctx.WriteString("Failed to fetch breed images")
-		return
-	}
-	defer response.Body.Close()
+    // Fetch breed-specific information
+    apiURL := "https://api.thecatapi.com/v1/breeds"
+    response, err := http.Get(apiURL + "?api_key=" + apiKey)
+    if err != nil {
+        c.Ctx.WriteString("Failed to fetch breed information")
+        return
+    }
+    defer response.Body.Close()
 
-	body, err := ioutil.ReadAll(response.Body)
-	if err != nil {
-		c.Ctx.WriteString("Failed to read response")
-		return
-	}
+    body, err := ioutil.ReadAll(response.Body)
+    if err != nil {
+        c.Ctx.WriteString("Failed to read breed information")
+        return
+    }
 
-	var images []CatImage
-	err = json.Unmarshal(body, &images)
-	if err != nil {
-		c.Ctx.WriteString("Failed to parse response")
-		return
-	}
+    var breeds []CatBreed
+    err = json.Unmarshal(body, &breeds)
+    if err != nil {
+        c.Ctx.WriteString("Failed to parse breed information")
+        return
+    }
 
-	c.Data["Images"] = images
-	c.TplName = "breed_images.tpl"
+    var selectedBreed *CatBreed
+    // Find the breed that matches the provided breedID
+    for _, breed := range breeds {
+        if breed.ID == breedID {
+            selectedBreed = &breed
+            break
+        }
+    }
+
+    if selectedBreed == nil {
+        c.Ctx.WriteString("Breed not found")
+        return
+    }
+
+    // Fetch breed images
+    imageAPIURL := fmt.Sprintf("https://api.thecatapi.com/v1/images/search?breed_ids=%s&limit=5", breedID)
+    imageResponse, err := http.Get(imageAPIURL + "&api_key=" + apiKey)
+    if err != nil {
+        c.Ctx.WriteString("Failed to fetch breed images")
+        return
+    }
+    defer imageResponse.Body.Close()
+
+    imageBody, err := ioutil.ReadAll(imageResponse.Body)
+    if err != nil {
+        c.Ctx.WriteString("Failed to read image data")
+        return
+    }
+
+    var images []CatImage
+    err = json.Unmarshal(imageBody, &images)
+    if err != nil {
+        c.Ctx.WriteString("Failed to parse image data")
+        return
+    }
+
+    // Pass both breed info and images to the template
+    c.Data["BreedName"] = selectedBreed.Name
+    c.Data["Origin"] = selectedBreed.Origin
+    c.Data["Description"] = selectedBreed.Description
+    c.Data["WikipediaURL"] = selectedBreed.WikipediaURL
+    c.Data["ID"] = selectedBreed.ID
+    c.Data["Images"] = images
+    c.TplName = "breed_images.tpl"
 }
 
 
