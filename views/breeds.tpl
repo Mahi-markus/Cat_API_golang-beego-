@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Cat Breeds</title>
+    
 
     <!-- Include Select2 CSS -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
@@ -79,7 +79,7 @@
     <div class="breed-select">
         <!-- Include Navbar -->
         {{template "navbar.tpl"}}
-        <h1>Cat Breeds</h1>
+        
         
         <!-- Dropdown Form -->
         <form method="get" action="/cat/breed_images">

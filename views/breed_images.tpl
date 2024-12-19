@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Breed Images</title>
+    
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -95,7 +95,9 @@
     
     <div class="slideshow-container">
     <!-- Include Navbar -->
-     {{template "navbar.tpl"}}
+     {{template "breeds.tpl"}}
+
+     
         {{range .Images}}
         <div class="slide">
             <img src="{{.URL}}" alt="Cat Image">
