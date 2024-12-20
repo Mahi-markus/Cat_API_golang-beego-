@@ -78,7 +78,7 @@
 
     <div class="breed-select">
         <!-- Include Navbar -->
-        {{template "navbar.tpl"}}
+        
         
         
         <!-- Dropdown Form -->

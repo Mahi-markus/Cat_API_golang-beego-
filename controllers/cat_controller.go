@@ -83,7 +83,7 @@ func (c *CatController) Get() {
 	} else {
 		c.Data["ImageURL"] = images[0].URL
 	}
-	c.TplName = "index.tpl"
+	c.TplName = "index1.tpl"
 }
 
 func (c *CatController) Breeds() {

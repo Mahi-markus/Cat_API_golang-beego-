@@ -1,0 +1,140 @@
+/* General Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Body */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+    color: #333;
+    line-height: 1.6;
+}
+
+/* Container */
+.container {
+    width: 80%;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Header */
+h1 {
+    font-size: 2.5rem;
+    color: #2c3e50;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+/* Cat Image */
+#cat-image {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+#cat-image img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Cat Breeds */
+#cat-breeds {
+    margin-bottom: 30px;
+}
+
+#cat-breeds h2 {
+    font-size: 1.8rem;
+    color: #34495e;
+    margin-bottom: 10px;
+}
+
+#cat-breeds ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+#cat-breeds ul li {
+    font-size: 1.2rem;
+    margin-bottom: 8px;
+    color: #7f8c8d;
+}
+
+/* Voting Section */
+#cat-voting {
+    margin-bottom: 30px;
+}
+
+#cat-voting h2 {
+    font-size: 1.8rem;
+    color: #34495e;
+    margin-bottom: 10px;
+}
+
+#cat-voting form {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+
+#cat-voting input[type="text"] {
+    padding: 10px;
+    font-size: 1rem;
+    border: 2px solid #ccc;
+    border-radius: 8px;
+    width: 200px;
+}
+
+#cat-voting button {
+    padding: 10px 20px;
+    font-size: 1rem;
+    color: #fff;
+    background-color: #2ecc71;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+#cat-voting button:hover {
+    background-color: #27ae60;
+}
+
+/* Favorites Section */
+#favorites {
+    margin-bottom: 30px;
+}
+
+#favorites h2 {
+    font-size: 1.8rem;
+    color: #34495e;
+    margin-bottom: 10px;
+}
+
+#favorites ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    list-style-type: none;
+    padding: 0;
+}
+
+#favorites ul li {
+    width: 200px;
+    height: 200px;
+}
+
+#favorites ul li img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}

@@ -84,3 +84,12 @@ Verify the setup:
 echo $GOPATH
 echo $PATH
 .........................
+
+
+
+go clean -modcache
+go mod tidy
+
+<script src="/static/js/spa.js"></script>
+
+"{{.ImageURL}}" alt="Cat Image"

@@ -68,7 +68,7 @@
 
 </head>
 <body>
-     <div class="nav">
+    <div class="nav">
         <a href="/cat/voting" class="voting">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <path d="M12 20V4M4 12l8-8 8 8"/> <!-- Upward arrow -->
