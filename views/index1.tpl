@@ -4,152 +4,88 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cat Gallery</title>
-    <style>
-        /* General Reset */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        /* Navigation Styles */
-        .nav {
-            display: flex;
-            justify-content: space-around;
-            margin-bottom: 20px;
-        }
-        .nav a {
-            text-decoration: none;
-            color: #333;
-            font-weight: bold;
-            font-size: 16px;
-            padding: 10px 20px;
-            transition: color 0.3s, background-color 0.3s;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-        .nav a.active {
-            color: orange;
-            background-color: #f0f0f0;
-        }
-        .nav a:hover {
-            color: orange;
-            background-color: #f0f0f0;
-        }
-
-        /* Content Styles */
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f9f9f9;
-            margin: 0;
-            padding: 0;
-        }
-        #spa-content {
-            min-height: 100vh;
-        }
-
-        /* Container Styling */
-        .container {
-            position: relative;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            margin: 50px auto;
-            width: 300px;
-            height: 200px;
-            background-color: #fff;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            padding: 20px;
-        }
-
-        /* Image Styling */
-        .container img {
-            max-width: 90%; /* Reduce size relative to container */
-            max-height: 150px; /* Limit height */
-            border-radius: 10px;
-            object-fit: cover;
-        }
-
-        /* Button Row Styling */
-        .button-row {
-            position: absolute;
-            bottom: 10px;
-            width: 100%;
-            display: flex;
-            justify-content: space-between;
-            padding: 0 20px;
-        }
-
-        .button-row button {
-            background-color: #f0f0f0;
-            border: none;
-            border-radius: 5px;
-            padding: 10px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-            font-size: 16px;
-        }
-        .button-row button:hover {
-            background-color: #e0e0e0;
-        }
-        .button-row button[title="Love"] {
-            color: #ff6b6b;
-            font-size: 20px;
-        }
-
-    </style>
-
-    <script src="/static/js/spa.js"></script>
 </head>
 <body>
-     <!-- Tab Navigation -->
-     <div class="nav">
-        <a data-tab="voting" class="voting active">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M12 20V4M4 12l8-8 8 8"/>
-            </svg>
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M12 4v16M4 12l8 8 8-8"/>
-            </svg>
+    <!-- Tab Navigation -->
+    <div class="nav" style="display: flex; justify-content: space-around; margin-bottom: 20px;">
+        <a data-tab="voting" class="voting active" style="text-decoration: none; color: #333; font-weight: bold; font-size: 16px; padding: 10px 20px; transition: color 0.3s, background-color 0.3s; border-radius: 5px; cursor: pointer;">
             Voting
         </a>
-        <a data-tab="breeds" class="breeds">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <circle cx="11" cy="11" r="8"/>
-                <path d="M21 21l-4.35-4.35"/>
-            </svg>
+        <a data-tab="breeds" class="breeds" style="text-decoration: none; color: #333; font-weight: bold; font-size: 16px; padding: 10px 20px; transition: color 0.3s, background-color 0.3s; border-radius: 5px; cursor: pointer;">
             Breeds
         </a>
-        <a data-tab="favs" class="favs">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78L12 21.23l8.84-8.84a5.5 5.5 0 0 0 0-7.78z"/>
-            </svg>
+        <a data-tab="favs" class="favs" style="text-decoration: none; color: #333; font-weight: bold; font-size: 16px; padding: 10px 20px; transition: color 0.3s, background-color 0.3s; border-radius: 5px; cursor: pointer;">
             Favs
         </a>
     </div>
     
     <!-- Main content area -->
-    <div id="spa-content">
-        <div class="container">
-            <img src="{{.ImageURL}}" alt="Cat Image">
-            <div class="button-row">
+    <div id="spa-content" style="display: flex; justify-content: center; align-items: center; height: 100vh; padding: 20px;">
+        <div class="container" style="display: flex; flex-direction: column; align-items: center; justify-content: center; background-color: #fff; border-radius: 10px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); padding: 20px; text-align: center;">
+            <img id="catImage" src="{{.ImageURL}}" alt="Cat Image" style="max-width: 100%; max-height: 300px; border-radius: 10px; object-fit: cover; margin-bottom: 20px;">
+            <div class="button-row" style="display: flex; justify-content: space-between; width: 100%; max-width: 300px;">
                 <div class="love-button">
-                    <form action="/cat/love" method="POST">
-                        <input type="hidden" name="image_url" value="{{.ImageURL}}">
-                        <button type="submit" title="Love">❤️</button>
-                    </form>
+                    <button type="button" id="love-button" title="Love" style="background-color: #f0f0f0; border: none; border-radius: 5px; padding: 10px; cursor: pointer; transition: background-color 0.3s; font-size: 20px; color: #ff6b6b;">❤️</button>
                 </div>
                 <div class="like-dislike-buttons">
                     <form action="/cat/vote" method="POST">
-                        <button type="submit" name="vote" value="up" title="Like">👍</button>
-                        <button type="submit" name="vote" value="down" title="Dislike">👎</button>
+                        <input type="hidden" name="image_url" value="{{.ImageURL}}">
+                        <button type="submit" name="vote" value="up" title="Like" style="background-color: #f0f0f0; border: none; border-radius: 5px; padding: 10px; cursor: pointer; transition: background-color 0.3s; font-size: 16px;">👍</button>
+                        <button type="submit" name="vote" value="down" title="Dislike" style="background-color: #f0f0f0; border: none; border-radius: 5px; padding: 10px; cursor: pointer; transition: background-color 0.3s; font-size: 16px;">👎</button>
                     </form>
                 </div>
             </div>
         </div>
     </div>
+
+    <script>
+        // Function to extract image ID from URL
+        function getImageIdFromUrl(url) {
+            // Example URL: https://cdn2.thecatapi.com/images/MTk3ODc5MA.jpg
+            const parts = url.split('/');
+            const filename = parts[parts.length - 1];
+            return filename.split('.')[0]; // Remove file extension
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const loveButton = document.getElementById('love-button');
+            const imageUrl = document.getElementById('catImage').src;
+            
+            loveButton.addEventListener('click', async () => {
+                try {
+                    // Disable button to prevent double clicks
+                    loveButton.disabled = true;
+                    
+                    const imageId = getImageIdFromUrl(imageUrl);
+                    const response = await fetch('/cat/love', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            image_id: imageId,
+                            sub_id: "user-123", // You can make this dynamic if needed
+                            image_url: imageUrl
+                        })
+                    });
+
+                    const result = await response.json();
+                    
+                    if (response.ok) {
+                        alert('Successfully added to favorites!');
+                        loveButton.style.backgroundColor = '#ffecec';
+                    } else {
+                        throw new Error(result.error || 'Failed to add to favorites');
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    alert('Error: ' + error.message);
+                } finally {
+                    // Re-enable button
+                    loveButton.disabled = false;
+                }
+            });
+        });
+    </script>
 </body>
 </html>
-

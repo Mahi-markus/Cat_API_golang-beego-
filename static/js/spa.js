@@ -1,12 +1,9 @@
-// spa.js
 const SPA = {
-    currentTab: 'voting',  // Changed default tab to voting
+    currentTab: 'voting',
 
     init() {
-        // Load initial voting content
-        this.showContent('voting');  // Changed to load voting by default
+        this.showContent('voting');
         
-        // Handle tab clicks
         document.querySelectorAll('.nav a').forEach(tab => {
             tab.addEventListener('click', (e) => {
                 e.preventDefault();
@@ -16,7 +13,6 @@ const SPA = {
             });
         });
 
-        // Set voting tab as active initially
         this.updateActiveTab('voting');
     },
 
@@ -28,7 +24,7 @@ const SPA = {
             case 'voting':
                 const votingContent = await this.fetchContent('/cat1');
                 mainContent.innerHTML = votingContent;
-                this.attachHomeEventListeners();
+                this.attachVotingEventListeners();
                 break;
 
             case 'breeds':
@@ -48,7 +44,6 @@ const SPA = {
         try {
             const response = await fetch(url);
             const html = await response.text();
-            // Extract only the content we need from the response
             const tempDiv = document.createElement('div');
             tempDiv.innerHTML = html;
             const container = tempDiv.querySelector('.container') || tempDiv;
@@ -63,36 +58,83 @@ const SPA = {
         document.querySelectorAll('.nav a').forEach(tab => {
             if (tab.getAttribute('data-tab') === tabName) {
                 tab.classList.add('active');
+                tab.style.backgroundColor = '#e0e0e0';
             } else {
                 tab.classList.remove('active');
+                tab.style.backgroundColor = 'transparent';
             }
         });
     },
 
-    attachHomeEventListeners() {
-        // Handle love button submissions
-        document.querySelectorAll('form[action="/cat/love"]').forEach(form => {
-            form.onsubmit = async (e) => {
-                e.preventDefault();
-                const formData = new FormData(form);
-                await fetch('/cat/love', {
-                    method: 'POST',
-                    body: formData
-                });
-                this.showContent('voting');
-            };
-        });
+    // Function to extract image ID from URL
+    getImageIdFromUrl(url) {
+        const parts = url.split('/');
+        const filename = parts[parts.length - 1];
+        return filename.split('.')[0];
+    },
+
+    attachVotingEventListeners() {
+        // Handle love button clicks
+        const loveButton = document.getElementById('love-button');
+        if (loveButton) {
+            loveButton.addEventListener('click', async () => {
+                try {
+                    loveButton.disabled = true;
+                    const imageUrl = document.getElementById('catImage').src;
+                    const imageId = this.getImageIdFromUrl(imageUrl);
+                    
+                    const response = await fetch('/cat/love', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            image_id: imageId,
+                            sub_id: "user-123"
+                            // Removed image_url as it's not allowed by the API
+                        })
+                    });
+
+                    const result = await response.json();
+                    
+                    if (response.ok) {
+                        alert('Successfully added to favorites!');
+                        loveButton.style.backgroundColor = '#ffecec';
+                        // Refresh the content after successful love
+                        await this.showContent('voting');
+                    } else {
+                        throw new Error(result.error || 'Failed to add to favorites');
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    alert('Error: ' + error.message);
+                } finally {
+                    loveButton.disabled = false;
+                }
+            });
+        }
 
         // Handle voting submissions
         document.querySelectorAll('form[action="/cat/vote"]').forEach(form => {
             form.onsubmit = async (e) => {
                 e.preventDefault();
-                const formData = new FormData(form);
-                await fetch('/cat/vote', {
-                    method: 'POST',
-                    body: formData
-                });
-                this.showContent('voting');
+                try {
+                    const formData = new FormData(form);
+                    const response = await fetch('/cat/vote', {
+                        method: 'POST',
+                        body: formData
+                    });
+                    
+                    if (response.ok) {
+                        await this.showContent('voting');
+                    } else {
+                        const result = await response.json();
+                        throw new Error(result.error || 'Failed to submit vote');
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    alert('Error: ' + error.message);
+                }
             };
         });
     },
@@ -131,21 +173,16 @@ const SPA = {
             showSlides(slideIndex += n);
         }
 
-        // Attach click handlers to prev/next buttons
         const prevButton = document.querySelector('.prev');
         const nextButton = document.querySelector('.next');
         if (prevButton) prevButton.onclick = () => changeSlide(-1);
         if (nextButton) nextButton.onclick = () => changeSlide(1);
 
-        // Initialize first slide
         showSlides(slideIndex);
-
-        // Auto slide functionality
         setInterval(() => changeSlide(1), 5000);
     }
 };
 
-// Initialize SPA when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
     SPA.init();
 });

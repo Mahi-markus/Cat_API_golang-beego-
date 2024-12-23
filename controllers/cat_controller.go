@@ -110,18 +110,6 @@ func (c *CatController) Breeds() {
 }
 
 
-func (c *CatController) Voting() {
-	c.Redirect("/", 302)
-
-
-}
-
-
-func (c *CatController) Vote() {
-	c.Redirect("/", 302)
-
-
-}
 
 func (c *CatController) BreedImages() {
 	apiKey := loadAPIKey()
@@ -180,21 +168,4 @@ func (c *CatController) BreedImages() {
 	c.Data["ID"] = selectedBreed.ID
 	c.Data["Images"] = images
 	c.TplName = "breed_images.tpl"
-}
-
-var lovedImages []string
-
-func (c *CatController) Favs() {
-	c.Data["LovedImages"] = lovedImages
-	c.TplName = "favs.tpl"
-}
-
-func (c *CatController) Love() {
-	imageURL := c.GetString("image_url")
-	if imageURL != "" {
-		lovedImages = append(lovedImages, imageURL)
-		c.Redirect("/", 302)
-	} else {
-		c.Ctx.Abort(400, "Invalid image URL")
-	}
 }

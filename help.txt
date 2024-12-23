@@ -93,3 +93,139 @@ go mod tidy
 <script src="/static/js/spa.js"></script>
 
 "{{.ImageURL}}" alt="Cat Image"
+
+
+//////////////////////////////
+
+// FavoriteResponse represents the API response when creating a favorite
+type FavoriteResponse struct {
+    ID     string `json:"id"`
+    Status int    `json:"status"`
+    Message string `json:"message"`
+}
+
+// FavoriteItem represents a single favorite item in the API response
+type FavoriteItem struct {
+    ID        string   `json:"id"`
+    ImageID   string   `json:"image_id"`
+    SubID     string   `json:"sub_id"`
+    CreatedAt string   `json:"created_at"`
+    Image     CatImage `json:"image"`
+}
+
+// Love adds an image to the user's favorites.
+func (c *CatController) Love() {
+    apiKey := loadAPIKey()
+    imageID := c.GetString("image_id")
+    subID := c.GetString("sub_id")
+	c.Ctx.WriteString(subID)
+
+    // Validate required parameters
+    if imageID == "" {
+        c.Data["json"] = map[string]interface{}{
+            "success": false,
+            "message": "Image ID is required",
+        }
+        c.ServeJSON()
+        return
+    }
+
+    // Create favorite request body
+    requestBody := map[string]string{
+        "image_id": imageID,
+    }
+    if subID != "" {
+        requestBody["sub_id"] = subID
+    }
+	
+    // Send POST request to create favorite
+    responseBody, err := postAPI("https://api.thecatapi.com/v1/favourites", apiKey, requestBody)
+    if err != nil {
+        c.Data["json"] = map[string]interface{}{
+            "success": false,
+            "message": "Failed to add favorite: " + err.Error(),
+        }
+        c.ServeJSON()
+        return
+    }
+
+    // Parse the response
+    var favoriteResponse FavoriteResponse
+    if err := json.Unmarshal(responseBody, &favoriteResponse); err != nil {
+        c.Data["json"] = map[string]interface{}{
+            "success": false,
+            "message": "Failed to parse response: " + err.Error(),
+        }
+        c.ServeJSON()
+        return
+    }
+
+    c.Data["json"] = map[string]interface{}{
+        "success": true,
+        "message": "Image added to favorites",
+        "id": favoriteResponse.ID,
+    }
+    c.ServeJSON()
+}
+
+// Favs fetches and displays the user's favorite images.
+// Favs fetches and displays the user's favorite images.
+func (c *CatController) Favs() {
+    apiKey := loadAPIKey()
+    subID := c.GetString("sub_id")
+
+    apiURL := `https://api.thecatapi.com/v1/favourites?limit=20&sub_id=%s&order=DESC`
+    if subID != "" {
+        apiURL += "&sub_id=" + subID
+    }
+	fmt.Printf("IDs are %s\n",subID)
+
+    // Add debug logging
+    fmt.Printf("Fetching favorites from URL: %s\n", apiURL)
+    
+    body, err := fetchAPI(apiURL, apiKey)
+    if err != nil {
+        fmt.Printf("Error fetching favorites: %v\n", err)
+        c.Data["Message"] = "Error fetching favorites: " + err.Error()
+        c.TplName = "favs.tpl"
+        return
+    }
+
+    // Log the raw response
+    fmt.Printf("Raw API response: %s\n", string(body))
+
+    var favorites []FavoriteItem
+    if err := json.Unmarshal(body, &favorites); err != nil {
+        fmt.Printf("Error unmarshaling JSON: %v\n", err)
+        c.Data["Message"] = "Error processing favorites: " + err.Error()
+        c.TplName = "favs.tpl"
+        return
+    }
+
+    fmt.Printf("Number of favorites found: %d\n", len(favorites))
+    
+    if len(favorites) == 0 {
+        c.Data["Message"] = "No favorites found"
+    } else {
+        c.Data["Favorites"] = favorites
+        c.Data["Count"] = len(favorites)
+        // Debug: Print first favorite
+        if len(favorites) > 0 {
+            fmt.Printf("First favorite: %+v\n", favorites[0])
+        }
+    }
+
+    c.TplName = "favs.tpl"
+}
+
+
+func (c *CatController) Voting() {
+	
+}
+
+
+func (c *CatController) Vote() {
+	
+}
+
+
