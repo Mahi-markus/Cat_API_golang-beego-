@@ -40,6 +40,9 @@ const SPA = {
         }
     },
 
+
+    
+
     async fetchContent(url) {
         try {
             const response = await fetch(url);
