@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cat Gallery</title>
+
+    <script src="/static/js/spa.js"></script>
 </head>
 <body>
     <!-- Tab Navigation -->
@@ -29,9 +31,9 @@
                 </div>
                 <div class="like-dislike-buttons">
                     <form action="/cat/vote" method="POST">
-                        <input type="hidden" name="image_url" value="{{.ImageURL}}">
-                        <button type="submit" name="vote" value="up" title="Like" style="background-color: #f0f0f0; border: none; border-radius: 5px; padding: 10px; cursor: pointer; transition: background-color 0.3s; font-size: 16px;">👍</button>
-                        <button type="submit" name="vote" value="down" title="Dislike" style="background-color: #f0f0f0; border: none; border-radius: 5px; padding: 10px; cursor: pointer; transition: background-color 0.3s; font-size: 16px;">👎</button>
+                        <input type="hidden" name="image_id" value="{{.ImageURL}}">
+                        <button type="submit" name="vote" value="1" title="Like" style="background-color: #f0f0f0; border: none; border-radius: 5px; padding: 10px; cursor: pointer; transition: background-color 0.3s; font-size: 16px;">👍</button>
+                        <button type="submit" name="vote" value="-1" title="Dislike" style="background-color: #f0f0f0; border: none; border-radius: 5px; padding: 10px; cursor: pointer; transition: background-color 0.3s; font-size: 16px;">👎</button>
                     </form>
                 </div>
             </div>

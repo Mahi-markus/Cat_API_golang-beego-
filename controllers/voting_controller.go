@@ -182,6 +182,9 @@ func (c *VotingController) Vote() {
 		return
 	}
 
-	c.Data["json"] = json.RawMessage(response.Body)
+	c.Data["json"] = map[string]interface{}{
+    "message": "Vote submitted successfully",
+    "response": json.RawMessage(response.Body),
+}
 	c.ServeJSON()
 }

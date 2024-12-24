@@ -229,3 +229,11 @@ func (c *CatController) Vote() {
 }
 
 
+9k4
+
+
+curl -X POST http://localhost:8080/cat/vote      -H "Content-Type: application/json"      -d '{
+           "image_id": "MTg3MjE2OQ",
+           "sub_id": "user-123",
+           "value": 1
+         }'

@@ -11,27 +11,33 @@
             background-color: #f9f9f9;
             margin: 0;
             padding: 0;
-            
         }
+    
         h1 {
             margin: 20px 0;
-            margin-up: 20px
+            margin-top: 20px;
         }
+    
         .slideshow-container {
             position: relative;
             max-width: 600px;
             margin: 50px auto;
+            overflow: hidden; /* To hide overflowing images */
         }
+    
         .slide {
             display: none;
             text-align: center;
+            transition: opacity 0.5s ease-in-out; /* Smooth transition for slides */
         }
+    
         .slide img {
             width: 100%;
             max-height: 400px;
             object-fit: cover;
             border-radius: 10px;
         }
+    
         .prev, .next {
             cursor: pointer;
             position: absolute;
@@ -46,16 +52,20 @@
             border-radius: 0 3px 3px 0;
             user-select: none;
         }
+    
         .next {
             right: 0;
             border-radius: 3px 0 0 3px;
         }
+    
         .prev {
             left: 0;
         }
+    
         .prev:hover, .next:hover {
-            background-color: rgba(0,0,0,0.8);
+            background-color: rgba(0, 0, 0, 0.8);
         }
+    
         .breed-info {
             margin-top: 20px;
             padding: 20px;
@@ -66,19 +76,23 @@
             max-width: 600px;
             margin: 20px auto;
         }
+    
         .breed-info h2 {
             margin: 0;
             color: orange;
         }
+    
         .breed-info p {
             margin: 10px 0;
             color: #555;
-            font-size: 17px
+            font-size: 17px;
         }
+    
         .breed-info a {
             text-decoration: none;
             color: #007BFF;
         }
+    
         .back-link {
             display: block;
             margin-top: 20px;
@@ -86,10 +100,30 @@
             color: #333;
             font-weight: bold;
         }
+    
         .back-link:hover {
             color: orange;
         }
+    
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .slideshow-container {
+                width: 100%;
+                padding: 0 10px;
+            }
+    
+            .breed-info {
+                padding: 15px;
+                margin: 10px;
+            }
+    
+            .prev, .next {
+                font-size: 16px;
+                padding: 14px;
+            }
+        }
     </style>
+    
 </head>
 <body>
     

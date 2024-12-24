@@ -76,7 +76,7 @@ const SPA = {
         return filename.split('.')[0];
     },
 
-    attachVotingEventListeners() {
+    async attachVotingEventListeners() {
         // Handle love button clicks
         const loveButton = document.getElementById('love-button');
         if (loveButton) {
@@ -85,7 +85,7 @@ const SPA = {
                     loveButton.disabled = true;
                     const imageUrl = document.getElementById('catImage').src;
                     const imageId = this.getImageIdFromUrl(imageUrl);
-                    
+    
                     const response = await fetch('/cat/love', {
                         method: 'POST',
                         headers: {
@@ -93,13 +93,12 @@ const SPA = {
                         },
                         body: JSON.stringify({
                             image_id: imageId,
-                            sub_id: "user-123"
-                            // Removed image_url as it's not allowed by the API
+                            sub_id: "user-123",
                         })
                     });
-
+    
                     const result = await response.json();
-                    
+    
                     if (response.ok) {
                         alert('Successfully added to favorites!');
                         loveButton.style.backgroundColor = '#ffecec';
@@ -116,18 +115,27 @@ const SPA = {
                 }
             });
         }
-
+    
         // Handle voting submissions
         document.querySelectorAll('form[action="/cat/vote"]').forEach(form => {
             form.onsubmit = async (e) => {
                 e.preventDefault();
                 try {
                     const formData = new FormData(form);
+                    const data = {
+                        image_id: formData.get('image_id'),
+                        vote: formData.get('vote'),
+                        sub_id: "user-123", // You may use a user identifier if needed
+                    };
+    
                     const response = await fetch('/cat/vote', {
                         method: 'POST',
-                        body: formData
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(data)
                     });
-                    
+    
                     if (response.ok) {
                         await this.showContent('voting');
                     } else {
@@ -140,7 +148,9 @@ const SPA = {
                 }
             };
         });
-    },
+    }
+    ,
+    
 
     initializeSelect2() {
         if (typeof $ !== 'undefined') {

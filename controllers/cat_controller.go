@@ -64,7 +64,7 @@ func fetchAPI(url, apiKey string, ch chan<- []byte) {
 	ch <- body
 }
 
-func (c *CatController) Get() {
+func (c *CatController) Home() {
 	apiKey := loadAPIKey()
 	apiURL := "https://api.thecatapi.com/v1/images/search"
 	ch := make(chan []byte)
@@ -83,7 +83,7 @@ func (c *CatController) Get() {
 	} else {
 		c.Data["ImageURL"] = images[0].URL
 	}
-	c.TplName = "index1.tpl"
+	c.TplName = "index.tpl"
 }
 
 func (c *CatController) Breeds() {

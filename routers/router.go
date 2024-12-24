@@ -8,7 +8,7 @@ import (
 
 func init() {
 	web.Router("/", &controllers.MainController{})
-	web.Router("/cat1", &controllers.CatController{})
+	web.Router("/cat1", &controllers.CatController{},"get:Home")
 	//web.Router("/cat/voting", &controllers.VotingController{}, "get:Voting")
 	web.Router("/cat/breeds", &controllers.CatController{}, "get:Breeds")
 	//web.Router("/cat/favs", &controllers.FavoriteController{}, "get:Favs")
