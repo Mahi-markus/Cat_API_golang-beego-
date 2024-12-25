@@ -5,10 +5,8 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
-	"os"
 
 	"github.com/beego/beego/v2/server/web"
-	"github.com/joho/godotenv"
 )
 
 type CatController struct {
@@ -28,12 +26,13 @@ type CatImage struct {
 	URL string `json:"url"`
 }
 
-// Load API key from environment
+// Load API key from AppConfig
 func loadAPIKey() string {
-	if err := godotenv.Load(); err != nil {
-		fmt.Println("Warning: No .env file found, using default configuration.")
+	apiKey, err := web.AppConfig.String("cat_api_key")
+	if err != nil || apiKey == "" {
+		fmt.Println("Error: API key not found in app.conf")
 	}
-	return os.Getenv("CAT_API_KEY")
+	return apiKey
 }
 
 // fetchAPI concurrently fetches data from a given URL and sends the response body to the provided channel.
@@ -87,87 +86,85 @@ func (c *CatController) Home() {
 }
 
 func (c *CatController) Breeds() {
-    apiKey := loadAPIKey()
-    apiURL := "https://api.thecatapi.com/v1/breeds"
-    ch := make(chan []byte)
+	apiKey := loadAPIKey()
+	apiURL := "https://api.thecatapi.com/v1/breeds"
+	ch := make(chan []byte)
 
-    go fetchAPI(apiURL, apiKey, ch)
-    body := <-ch
-    if body == nil {
-        c.Ctx.WriteString("Failed to fetch breeds")
-        return
-    }
+	go fetchAPI(apiURL, apiKey, ch)
+	body := <-ch
+	if body == nil {
+		c.Ctx.WriteString("Failed to fetch breeds")
+		return
+	}
 
-    var breeds []CatBreed
-    err := json.Unmarshal(body, &breeds)
-    if err != nil {
-        c.Ctx.WriteString("Failed to parse response")
-        return
-    }
+	var breeds []CatBreed
+	err := json.Unmarshal(body, &breeds)
+	if err != nil {
+		c.Ctx.WriteString("Failed to parse response")
+		return
+	}
 
-    // Add some logging to verify data
-    fmt.Printf("Fetched %d breeds\n", len(breeds))
-    
-    c.Data["Breeds"] = breeds
-    c.TplName = "single_page.tpl"
+	// Add some logging to verify data
+	fmt.Printf("Fetched %d breeds\n", len(breeds))
+
+	c.Data["Breeds"] = breeds
+	c.TplName = "single_page.tpl"
 }
 
-
-
 func (c *CatController) BreedImages() {
-    breedID := c.GetString("id")
-    if breedID == "" {
-        c.Data["json"] = map[string]interface{}{"error": "Invalid breed ID"}
-        c.ServeJSON()
-        return
-    }
+	breedID := c.GetString("id")
+	if breedID == "" {
+		c.Data["json"] = map[string]interface{}{"error": "Invalid breed ID"}
+		c.ServeJSON()
+		return
+	}
 
-    apiKey := loadAPIKey()
-    breedURL := fmt.Sprintf("https://api.thecatapi.com/v1/images/search?breed_ids=%s&limit=5", breedID)
-    
-    req, _ := http.NewRequest("GET", breedURL, nil)
-    req.Header.Add("x-api-key", apiKey)
-    
-    client := &http.Client{}
-    resp, err := client.Do(req)
-    if err != nil {
-        c.Data["json"] = map[string]interface{}{"error": "Failed to fetch images"}
-        c.ServeJSON()
-        return
-    }
-    defer resp.Body.Close()
+	apiKey := loadAPIKey()
+	breedURL := fmt.Sprintf("https://api.thecatapi.com/v1/images/search?breed_ids=%s&limit=5", breedID)
 
-    var images []CatImage
-    if err := json.NewDecoder(resp.Body).Decode(&images); err != nil {
-        c.Data["json"] = map[string]interface{}{"error": "Failed to parse images"}
-        c.ServeJSON()
-        return
-    }
+	req, _ := http.NewRequest("GET", breedURL, nil)
+	req.Header.Add("x-api-key", apiKey)
 
-    // Fetch breed details
-    breedResp, err := http.Get("https://api.thecatapi.com/v1/breeds/" + breedID)
-    if err != nil {
-        c.Data["json"] = map[string]interface{}{"error": "Failed to fetch breed info"}
-        c.ServeJSON()
-        return
-    }
-    defer breedResp.Body.Close()
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		c.Data["json"] = map[string]interface{}{"error": "Failed to fetch images"}
+		c.ServeJSON()
+		return
+	}
+	defer resp.Body.Close()
 
-    var breed CatBreed
-    if err := json.NewDecoder(breedResp.Body).Decode(&breed); err != nil {
-        c.Data["json"] = map[string]interface{}{"error": "Failed to parse breed info"}
-        c.ServeJSON()
-        return
-    }
+	var images []CatImage
+	if err := json.NewDecoder(resp.Body).Decode(&images); err != nil {
+		c.Data["json"] = map[string]interface{}{"error": "Failed to parse images"}
+		c.ServeJSON()
+		return
+	}
 
-    response := map[string]interface{}{
-        "BreedName": breed.Name,
-        "Description": breed.Description,
-        "Origin": breed.Origin,
-        "WikipediaURL": breed.WikipediaURL,
-        "Images": images,
-    }
+	// Fetch breed details
+	breedResp, err := http.Get("https://api.thecatapi.com/v1/breeds/" + breedID)
+	if err != nil {
+		c.Data["json"] = map[string]interface{}{"error": "Failed to fetch breed info"}
+		c.ServeJSON()
+		return
+	}
+	defer breedResp.Body.Close()
 
-    c.Data["json"] = response
-    c.ServeJSON()
+	var breed CatBreed
+	if err := json.NewDecoder(breedResp.Body).Decode(&breed); err != nil {
+		c.Data["json"] = map[string]interface{}{"error": "Failed to parse breed info"}
+		c.ServeJSON()
+		return
+	}
+
+	response := map[string]interface{}{
+		"BreedName":    breed.Name,
+		"Description":  breed.Description,
+		"Origin":       breed.Origin,
+		"WikipediaURL": breed.WikipediaURL,
+		"Images":       images,
+	}
+
+	c.Data["json"] = response
+	c.ServeJSON()
 }
