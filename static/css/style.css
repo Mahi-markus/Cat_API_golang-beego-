@@ -29,7 +29,7 @@ body {
   }
 
   .nav a.active {
-    background-color: #007bff;
+    background-color: #e95e1e;
     color: white;
   }
 
@@ -191,7 +191,7 @@ body {
   .breed-info a {
     display: inline-block;
     padding: 8px 15px;
-    background: #007bff;
+    background: #e95e1e;
     color: white;
     text-decoration: none;
     border-radius: 5px;
@@ -199,7 +199,7 @@ body {
   }
 
   .breed-info a:hover {
-    background: #0056b3;
+    background: #e95e1e;
   }
 
   .gallery {
