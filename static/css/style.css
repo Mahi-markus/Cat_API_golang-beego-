@@ -1,140 +1,256 @@
-/* General Reset */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-/* Body */
 body {
     font-family: Arial, sans-serif;
-    background-color: #f0f0f0;
-    color: #333;
-    line-height: 1.6;
-}
+    background-color: #f9f9f9;
+    margin: 0;
+    padding: 0;
+  }
 
-/* Container */
-.container {
-    width: 80%;
-    margin: 0 auto;
+  .nav {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 20px;
     padding: 20px;
+    background-color: white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  .nav a {
+    text-decoration: none;
+    color: #333;
+    font-weight: bold;
+    font-size: 16px;
+    padding: 10px 20px;
+    transition: color 0.3s, background-color 0.3s;
+    border-radius: 5px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .nav a.active {
+    background-color: #007bff;
+    color: white;
+  }
+
+  .section {
+    display: none;
+    padding: 20px;
+  }
+
+  .section.active {
+    display: block;
+  }
+
+  .container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    width: 600px;
+    margin: 50px auto;
+  }
+
+  .cat-image {
+    width: 500px;
+    height: 300px;
+    object-fit: cover;
+    border-radius: 10px;
+    margin-bottom: 20px;
+  }
+
+  .button-row {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    max-width: 300px;
+    margin-top: 20px;
+  }
+
+  button {
+    background-color: #f0f0f0;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    font-size: 16px;
+  }
+
+  button:hover {
+    background-color: #e0e0e0;
+  }
+
+  .breed-select {
+    width: 80%;
+    max-width: 600px;
+    margin: 50px auto;
     background-color: #fff;
     border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    box-sizing: border-box;
+  }
 
-/* Header */
-h1 {
-    font-size: 2.5rem;
-    color: #2c3e50;
-    text-align: center;
-    margin-bottom: 20px;
-}
-
-/* Cat Image */
-#cat-image {
-    text-align: center;
-    margin-bottom: 30px;
-}
-
-#cat-image img {
-    max-width: 100%;
-    height: auto;
-    border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
-
-/* Cat Breeds */
-#cat-breeds {
-    margin-bottom: 30px;
-}
-
-#cat-breeds h2 {
-    font-size: 1.8rem;
-    color: #34495e;
+  .breed-select label {
+    display: block;
     margin-bottom: 10px;
-}
+    font-size: 18px;
+    color: #333;
+    font-weight: bold;
+  }
 
-#cat-breeds ul {
-    list-style-type: none;
-    padding: 0;
-}
-
-#cat-breeds ul li {
-    font-size: 1.2rem;
-    margin-bottom: 8px;
-    color: #7f8c8d;
-}
-
-/* Voting Section */
-#cat-voting {
-    margin-bottom: 30px;
-}
-
-#cat-voting h2 {
-    font-size: 1.8rem;
-    color: #34495e;
-    margin-bottom: 10px;
-}
-
-#cat-voting form {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 10px;
-}
-
-#cat-voting input[type="text"] {
-    padding: 10px;
-    font-size: 1rem;
-    border: 2px solid #ccc;
-    border-radius: 8px;
-    width: 200px;
-}
-
-#cat-voting button {
-    padding: 10px 20px;
-    font-size: 1rem;
-    color: #fff;
-    background-color: #2ecc71;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
-
-#cat-voting button:hover {
-    background-color: #27ae60;
-}
-
-/* Favorites Section */
-#favorites {
-    margin-bottom: 30px;
-}
-
-#favorites h2 {
-    font-size: 1.8rem;
-    color: #34495e;
-    margin-bottom: 10px;
-}
-
-#favorites ul {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
-    list-style-type: none;
-    padding: 0;
-}
-
-#favorites ul li {
-    width: 200px;
-    height: 200px;
-}
-
-#favorites ul li img {
+  .breed-select select {
     width: 100%;
-    height: 100%;
+    padding: 12px;
+    border-radius: 4px;
+    border: 1px solid #ddd;
+  }
+
+  .slideshow-container {
+    position: relative;
+    max-width: 600px;
+    margin: 30px auto;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+  }
+
+  .slide {
+    display: none;
+    text-align: center;
+    padding: 20px;
+  }
+
+  .slide.active {
+    display: block;
+  }
+
+  .slide img {
+    width: 100%;
+    max-height: 400px;
     object-fit: cover;
     border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
+  }
+
+  .prev,
+  .next {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    padding: 16px;
+    background: rgba(0, 0, 0, 0.6);
+    color: white;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 18px;
+    transition: 0.3s ease;
+    user-select: none;
+    z-index: 1;
+  }
+
+  .prev {
+    left: 0;
+    border-radius: 0 3px 3px 0;
+  }
+
+  .next {
+    right: 0;
+    border-radius: 3px 0 0 3px;
+  }
+
+  .prev:hover,
+  .next:hover {
+    background: rgba(0, 0, 0, 0.8);
+  }
+
+  .breed-info {
+    max-width: 600px;
+    margin: 20px auto;
+    padding: 20px;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+  }
+
+  .breed-info h2 {
+    color: #333;
+    margin-bottom: 15px;
+  }
+
+  .breed-info p {
+    color: #666;
+    line-height: 1.6;
+    margin-bottom: 15px;
+  }
+
+  .breed-info a {
+    display: inline-block;
+    padding: 8px 15px;
+    background: #007bff;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    transition: background 0.3s;
+  }
+
+  .breed-info a:hover {
+    background: #0056b3;
+  }
+
+  .gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .gallery img {
+    width: 100%;
+    height: 300px;
+    object-fit: cover;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s;
+  }
+
+  .gallery img:hover {
+    transform: scale(1.03);
+  }
+
+  .error {
+    color: red;
+    padding: 20px;
+    text-align: center;
+    background: #fff;
+    border-radius: 8px;
+    margin: 20px auto;
+    max-width: 600px;
+  }
+
+  @media (max-width: 768px) {
+    .container {
+      width: 90%;
+      padding: 15px;
+    }
+
+    .cat-image {
+      width: 100%;
+      height: 250px;
+    }
+
+    .button-row {
+      max-width: 100%;
+    }
+
+    .breed-select,
+    .breed-info {
+      width: 90%;
+    }
+  }
