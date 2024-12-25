@@ -56,7 +56,7 @@ func (c *FavoritesController) GetFavorites() {
 	apiKey, err := web.AppConfig.String("cat_api_key")
 	if err != nil {
 		c.Data["Error"] = "Failed to get API key"
-		c.TplName = "favs.tpl"
+		c.TplName = "single_page.tpl"
 		return
 	}
 
@@ -66,7 +66,7 @@ func (c *FavoritesController) GetFavorites() {
 	response := <-responseChan
 	if response.Error != nil {
 		c.Data["Error"] = "Error fetching favorites"
-		c.TplName = "favs.tpl"
+		c.TplName = "single_page.tpl"
 		return
 	}
 
@@ -74,7 +74,7 @@ func (c *FavoritesController) GetFavorites() {
 	err = json.Unmarshal(response.Body, &favorites)
 	if err != nil {
 		c.Data["Error"] = "Error decoding response: " + err.Error()
-		c.TplName = "favs.tpl"
+		c.TplName = "single_page.tpl"
 		return
 	}
 
@@ -86,5 +86,5 @@ func (c *FavoritesController) GetFavorites() {
 
 	// Pass the image URLs to the template
 	c.Data["LovedImages"] = lovedImages
-	c.TplName = "favs.tpl"
+	c.TplName = "single_page.tpl"
 }
