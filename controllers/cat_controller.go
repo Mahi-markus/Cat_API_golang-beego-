@@ -83,7 +83,7 @@ func (c *CatController) Home() {
 	} else {
 		c.Data["ImageURL"] = images[0].URL
 	}
-	c.TplName = "index.tpl"
+	c.TplName = "single_page.tpl"
 }
 
 func (c *CatController) Breeds() {
@@ -106,7 +106,7 @@ func (c *CatController) Breeds() {
 	}
 
 	c.Data["Breeds"] = breeds
-	c.TplName = "breeds.tpl"
+	c.TplName = "single_page.tpl"
 }
 
 
@@ -167,5 +167,5 @@ func (c *CatController) BreedImages() {
 	c.Data["WikipediaURL"] = selectedBreed.WikipediaURL
 	c.Data["ID"] = selectedBreed.ID
 	c.Data["Images"] = images
-	c.TplName = "breed_images.tpl"
+	c.TplName = "single_page.tpl"
 }

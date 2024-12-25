@@ -1,344 +1,606 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Cat Gallery</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css"
+      rel="stylesheet"
+    />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f9f9f9;
-            margin: 0;
-            padding: 20px;
-        }
+      /* Previous styles remain the same */
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f9f9f9;
+        margin: 0;
+        padding: 0;
+      }
 
-        .nav {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            margin-bottom: 30px;
-            background: white;
-            padding: 15px;
-            border-radius: 10px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
+      .nav {
+        display: flex;
+        justify-content: space-around;
+        margin-bottom: 20px;
+        padding: 20px;
+        background-color: white;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
 
-        .nav-item {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            padding: 10px 20px;
-            cursor: pointer;
-            border-radius: 5px;
-            transition: all 0.3s;
-        }
+      .nav a {
+        text-decoration: none;
+        color: #333;
+        font-weight: bold;
+        font-size: 16px;
+        padding: 10px 20px;
+        transition: color 0.3s, background-color 0.3s;
+        border-radius: 5px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
 
-        .nav-item:hover {
-            background: #f0f0f0;
-            color: orange;
-        }
+      .nav a.active {
+        background-color: #007bff;
+        color: white;
+      }
 
-        .nav-item.active {
-            color: orange;
-            background: #f0f0f0;
-        }
+      .section {
+        display: none;
+        padding: 20px;
+      }
 
+      .section.active {
+        display: block;
+      }
+
+      /* Voting Section Styles */
+      .container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        background-color: #fff;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+        width: 600px;
+        margin: 50px auto;
+      }
+
+      .cat-image {
+        width: 500px;
+        height: 300px;
+        object-fit: cover;
+        border-radius: 10px;
+        margin-bottom: 20px;
+      }
+
+      .button-row {
+        display: flex;
+        justify-content: space-between;
+        width: 100%;
+        max-width: 300px;
+        margin-top: 20px;
+      }
+
+      button {
+        background-color: #f0f0f0;
+        border: none;
+        border-radius: 5px;
+        padding: 10px 20px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+        font-size: 16px;
+      }
+
+      button:hover {
+        background-color: #e0e0e0;
+      }
+
+      /* Breeds Section Styles */
+      .breed-select {
+        width: 80%;
+        max-width: 600px;
+        margin: 50px auto;
+        background-color: #fff;
+        border-radius: 8px;
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+        box-sizing: border-box;
+      }
+
+      .breed-select label {
+        display: block;
+        margin-bottom: 10px;
+        font-size: 18px;
+        color: #333;
+        font-weight: bold;
+      }
+
+      .breed-select select {
+        width: 100%;
+        padding: 12px;
+        border-radius: 4px;
+        border: 1px solid #ddd;
+      }
+
+      .slideshow-container {
+        position: relative;
+        max-width: 600px;
+        margin: 30px auto;
+        background: #fff;
+        border-radius: 10px;
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+      }
+
+      .slide {
+        display: none;
+        text-align: center;
+        padding: 20px;
+      }
+
+      .slide.active {
+        display: block;
+      }
+
+      .slide img {
+        width: 100%;
+        max-height: 400px;
+        object-fit: cover;
+        border-radius: 8px;
+      }
+
+      .prev,
+      .next {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        padding: 16px;
+        background: rgba(0, 0, 0, 0.6);
+        color: white;
+        cursor: pointer;
+        font-weight: bold;
+        font-size: 18px;
+        transition: 0.3s ease;
+        user-select: none;
+        z-index: 1;
+      }
+
+      .prev {
+        left: 0;
+        border-radius: 0 3px 3px 0;
+      }
+      .next {
+        right: 0;
+        border-radius: 3px 0 0 3px;
+      }
+
+      .prev:hover,
+      .next:hover {
+        background: rgba(0, 0, 0, 0.8);
+      }
+
+      .breed-info {
+        max-width: 600px;
+        margin: 20px auto;
+        padding: 20px;
+        background: #fff;
+        border-radius: 10px;
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+      }
+
+      .breed-info h2 {
+        color: #333;
+        margin-bottom: 15px;
+      }
+
+      .breed-info p {
+        color: #666;
+        line-height: 1.6;
+        margin-bottom: 15px;
+      }
+
+      .breed-info a {
+        display: inline-block;
+        padding: 8px 15px;
+        background: #007bff;
+        color: white;
+        text-decoration: none;
+        border-radius: 5px;
+        transition: background 0.3s;
+      }
+
+      .breed-info a:hover {
+        background: #0056b3;
+      }
+
+      /* Favorites Section Styles */
+      .gallery {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 20px;
+        padding: 20px;
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+
+      .gallery img {
+        width: 100%;
+        height: 300px;
+        object-fit: cover;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s;
+      }
+
+      .gallery img:hover {
+        transform: scale(1.03);
+      }
+
+      .error {
+        color: red;
+        padding: 20px;
+        text-align: center;
+        background: #fff;
+        border-radius: 8px;
+        margin: 20px auto;
+        max-width: 600px;
+      }
+
+      @media (max-width: 768px) {
         .container {
-            max-width: 800px;
-            margin: 0 auto;
-        }
-
-        .section {
-            display: none;
-            background: white;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            margin-bottom: 20px;
-        }
-
-        .section.active {
-            display: block;
-        }
-
-        .cat-image-container {
-            position: relative;
-            width: 100%;
-            height: 400px;
-            margin-bottom: 20px;
+          width: 90%;
+          padding: 15px;
         }
 
         .cat-image {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            border-radius: 10px;
+          width: 100%;
+          height: 250px;
         }
 
         .button-row {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            margin-top: 20px;
+          max-width: 100%;
         }
 
-        button {
-            background: none;
-            border: none;
-            font-size: 24px;
-            cursor: pointer;
-            transition: transform 0.2s;
-            padding: 10px;
-        }
-
-        button:hover {
-            transform: scale(1.2);
-        }
-
-        .breed-select {
-            width: 100%;
-            margin-bottom: 30px;
-        }
-
+        .breed-select,
         .breed-info {
-            margin-top: 20px;
-            padding: 20px;
-            border-radius: 10px;
-            background: #f8f8f8;
+          width: 90%;
         }
-
-        .slideshow-container {
-            position: relative;
-            height: 400px;
-            margin: 20px 0;
-        }
-
-        .slide {
-            display: none;
-            height: 100%;
-        }
-
-        .slide.active {
-            display: block;
-        }
-
-        .slide img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            border-radius: 10px;
-        }
-
-        .prev, .next {
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            padding: 16px;
-            color: white;
-            background: rgba(0,0,0,0.5);
-            cursor: pointer;
-            border-radius: 5px;
-            z-index: 1;
-        }
-
-        .prev { left: 10px; }
-        .next { right: 10px; }
-
-        .favorites-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 20px;
-            padding: 20px;
-        }
-
-        .favorite-image {
-            width: 100%;
-            height: 200px;
-            object-fit: cover;
-            border-radius: 10px;
-        }
-
-        .wiki-link {
-            display: inline-block;
-            margin-top: 10px;
-            color: #007bff;
-            text-decoration: none;
-        }
-
-        .wiki-link:hover {
-            text-decoration: underline;
-        }
+      }
     </style>
-</head>
-<body>
-    <div class="container">
-        <nav class="nav">
-            <div class="nav-item active" data-section="home">Home</div>
-            <div class="nav-item" data-section="breeds">Breeds</div>
-            <div class="nav-item" data-section="favorites">Favorites</div>
-        </nav>
+  </head>
+  <body>
+    <div class="nav">
+      <a href="#" data-section="voting" class="active">
+        <svg
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <path d="M12 20V4M4 12l8-8 8 8" />
+        </svg>
+        Voting
+      </a>
+      <a href="#" data-section="breeds">
+        <svg
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <circle cx="11" cy="11" r="8" />
+          <path d="M21 21l-4.35-4.35" />
+        </svg>
+        Breeds
+      </a>
+      <a href="#" data-section="favorites">
+        <svg
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <path
+            d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78L12 21.23l8.84-8.84a5.5 5.5 0 0 0 0-7.78z"
+          />
+        </svg>
+        Favorites
+      </a>
+    </div>
 
-        <div id="home" class="section active">
-            <div class="cat-image-container">
-                <img class="cat-image" src="" alt="Random Cat">
-            </div>
-            <div class="button-row">
-                <button type="button" class="love-button" title="Love">❤️</button>
-                <button type="button" class="vote-button" data-vote="up" title="Like">👍</button>
-                <button type="button" class="vote-button" data-vote="down" title="Dislike">👎</button>
-            </div>
+    <!-- Voting Section -->
+    <div id="voting-section" class="section active">
+      <div class="container">
+        <img
+          id="catImage"
+          src="{{.ImageURL}}"
+          alt="Cat Image"
+          class="cat-image"
+        />
+        <div class="button-row">
+          <button id="love-button" title="Love">❤️</button>
+          <div>
+            <button onclick="vote(1)" title="Like">👍</button>
+            <button onclick="vote(-1)" title="Dislike">👎</button>
+          </div>
         </div>
+      </div>
+    </div>
 
-        <div id="breeds" class="section">
-            <select id="breed-select" class="breed-select">
-                <option value="">-- Select Breed --</option>
-            </select>
-            <div id="breed-content"></div>
+    <!-- Breeds Section -->
+    <div id="breeds-section" class="section">
+      <div class="breed-select">
+        <label for="breed">Choose a Breed:</label>
+        <select name="breed" id="breed">
+          <option value="">-- Select Breed --</option>
+          {{
+            range.Breeds
+          }}
+          <option value="{{.ID}}">{{.Name}}</option>
+          {{
+            end
+          }}
+        </select>
+      </div>
+      <div id="breed-details" style="display: none">
+        <div class="slideshow-container">
+          <div id="breed-slides">
+            <!-- Slides will be populated by JavaScript -->
+          </div>
+          <a class="prev" onclick="changeSlide(-1)">&#10094;</a>
+          <a class="next" onclick="changeSlide(1)">&#10095;</a>
         </div>
+        <div class="breed-info">
+          <h2 id="breed-name">{{.BreedName}}</h2>
+          <p id="breed-description">{{.Description}}</p>
+          <p>
+            <strong>Origin:</strong> <span id="breed-origin">{{.Origin}}</span>
+          </p>
+          <a id="breed-wiki" href="{{.WikipediaURL}}" target="_blank"
+            >Learn More on Wikipedia</a
+          >
+        </div>
+      </div>
+    </div>
 
-        <div id="favorites" class="section">
-            <div class="favorites-grid"></div>
-        </div>
+    <!-- Favorites Section -->
+    <div id="favorites-section" class="section">
+      <div id="favorites-gallery" class="gallery">
+        {{ range.LovedImages }}
+        <img src="{{.}}" alt="Loved Cat Image" />
+        {{else}}
+        <p>No loved images yet.</p>
+        {{ end }}
+      </div>
     </div>
 
     <script>
-        let currentSlide = 0;
-        let currentImageUrl = '';
-        const breedsData = [
-            { id: 1, name: 'Persian', images: ['https://placekitten.com/800/600', 'https://placekitten.com/801/601'], description: 'Persian cats are known for their long fur and sweet disposition.', origin: 'Iran', wikipedia_url: 'https://en.wikipedia.org/wiki/Persian_cat' },
-            { id: 2, name: 'Siamese', images: ['https://placekitten.com/802/602', 'https://placekitten.com/803/603'], description: 'Siamese cats are vocal, affectionate, and friendly.', origin: 'Thailand', wikipedia_url: 'https://en.wikipedia.org/wiki/Siamese_cat' }
-        ];
-        const favoriteImages = ['https://placekitten.com/804/604', 'https://placekitten.com/805/605'];
+      let currentImageId = null;
+      let slideIndex = 0;
 
-        // Load random cat image (simulated static URL)
-        function loadRandomCat() {
-            const randomCatUrl = 'https://placekitten.com/600/400'; // Simulated static URL
-            document.querySelector('.cat-image').src = randomCatUrl;
-            currentImageUrl = randomCatUrl;
-        }
+      // Navigation
+      document.querySelectorAll(".nav a").forEach((link) => {
+        link.addEventListener("click", function (e) {
+          e.preventDefault();
+          document
+            .querySelectorAll(".nav a")
+            .forEach((a) => a.classList.remove("active"));
+          this.classList.add("active");
 
-        // Load breeds
-        function loadBreeds() {
-            const select = document.getElementById('breed-select');
-            breedsData.forEach(breed => {
-                const option = document.createElement('option');
-                option.value = breed.id;
-                option.textContent = breed.name;
-                select.appendChild(option);
-            });
-        }
+          const section = this.dataset.section;
+          document
+            .querySelectorAll(".section")
+            .forEach((s) => s.classList.remove("active"));
+          document.getElementById(`${section}-section`).classList.add("active");
 
-        // Load breed images and info
-        function loadBreedInfo(breedId) {
-            const breed = breedsData.find(b => b.id == breedId);
-            if (breed) {
-                const content = document.getElementById('breed-content');
-                content.innerHTML = `
-                    <div class="slideshow-container">
-                        ${breed.images.map(img => `
-                            <div class="slide">
-                                <img src="${img}" alt="Cat Image">
-                            </div>
-                        `).join('')}
-                        <a class="prev">❮</a>
-                        <a class="next">❯</a>
-                    </div>
-                    <div class="breed-info">
-                        <h2>${breed.name} (${breed.origin})</h2>
-                        <p>${breed.description}</p>
-                        <a href="${breed.wikipedia_url}" target="_blank" class="wiki-link">Learn more on Wikipedia</a>
-                    </div>
-                `;
-                currentSlide = 0;
-                initializeSlideshow();
-            }
-        }
+          if (section === "voting") loadRandomCat();
+          if (section === "favorites") loadFavorites();
+        });
+      });
 
-        // Load favorites
-        function loadFavorites() {
-            const grid = document.querySelector('.favorites-grid');
-            if (favoriteImages.length > 0) {
-                grid.innerHTML = favoriteImages
-                    .map(url => `<img class="favorite-image" src="${url}" alt="Favorite Cat">`)
-                    .join('');
-            } else {
-                grid.innerHTML = '<p>No favorite cats yet!</p>';
-            }
-        }
+      // Initialize Select2
+      $(document).ready(function () {
+        $("#breed").select2();
 
-        // Initialize slideshow controls
-        function initializeSlideshow() {
-            const slides = document.querySelectorAll('.slide');
-            if (slides.length === 0) return;
+        $("#breed").on("change", function () {
+          const breedId = this.value;
+          if (breedId) {
+            loadBreedImages(breedId);
+          } else {
+            document.getElementById("breed-details").style.display = "none";
+          }
+        });
+      });
 
-            function showSlides() {
-                slides.forEach(slide => slide.style.display = 'none');
-                slides[currentSlide].style.display = 'block';
-            }
+      // Voting Section Functions
+      function loadRandomCat() {
+        fetch("/cat1")
+          .then((response) => {
+            if (!response.ok) throw new Error("Failed to load random cat");
+            return response.text();
+          })
+          .then((html) => {
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(html, "text/html");
+            const imgUrl = doc.querySelector("#catImage").src;
+            document.querySelector("#catImage").src = imgUrl;
+            currentImageId = getImageIdFromUrl(imgUrl);
+          })
+          .catch((error) => {
+            console.error("Error loading random cat:", error);
+            alert("Failed to load new cat image. Please try again.");
+          });
+      }
 
-            document.querySelector('.prev').addEventListener('click', () => {
-                currentSlide = (currentSlide - 1 + slides.length) % slides.length;
-                showSlides();
-            });
+      function getImageIdFromUrl(url) {
+        const parts = url.split("/");
+        return parts[parts.length - 1].split(".")[0];
+      }
 
-            document.querySelector('.next').addEventListener('click', () => {
-                currentSlide = (currentSlide + 1) % slides.length;
-                showSlides();
-            });
+      function vote(value) {
+        if (!currentImageId) return;
 
-            showSlides();
-        }
+        fetch("/cat/vote", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            image_id: currentImageId,
+            sub_id: "user-123",
+            value: value,
+          }),
+        })
+          .then((response) => {
+            if (!response.ok) throw new Error("Failed to submit vote");
+            loadRandomCat();
+            return response.json();
+          })
+          .catch((error) => {
+            console.error("Error voting:", error);
+            alert("Failed to submit vote. Please try again.");
+          });
+      }
 
-        // Event Listeners
-        document.addEventListener('DOMContentLoaded', () => {
-            $('#breed-select').select2();
+      // Breeds Section Functions
+      function loadBreedImages(breedId) {
+        fetch(`/cat/breed_images?id=${breedId}`)
+          .then((response) => {
+            if (!response.ok) throw new Error("Failed to fetch breed data");
+            return response.json();
+          })
+          .then((data) => {
+            // Update breed information
+            document.getElementById("breed-name").textContent = data.BreedName;
+            document.getElementById("breed-description").textContent =
+              data.Description;
+            document.getElementById("breed-origin").textContent = data.Origin;
+            document.getElementById("breed-wiki").href = data.WikipediaURL;
 
-            loadRandomCat(); // Load initial random cat
-            loadBreeds(); // Load breeds on page load
+            // Update slides
+            const slidesHTML = data.Images.map(
+              (image, index) => `
+              <div class="slide ${index === 0 ? "active" : ""}">
+                <img src="${image.url}" alt="${data.BreedName} cat">
+              </div>
+            `
+            ).join("");
 
-            document.querySelectorAll('.nav-item').forEach(item => {
-                item.addEventListener('click', () => {
-                    const section = item.dataset.section;
-                    
-                    document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
-                    document.querySelectorAll('.section').forEach(section => section.classList.remove('active'));
-                    
-                    item.classList.add('active');
-                    document.getElementById(section).classList.add('active');
+            document.getElementById("breed-slides").innerHTML = slidesHTML;
+            document.getElementById("breed-details").style.display = "block";
+            slideIndex = 0;
+            showSlides(0);
+          })
+          .catch((error) => {
+            console.error("Error loading breed data:", error);
+            alert("Failed to load breed information. Please try again.");
+          });
+      }
 
-                    if (section === 'home') {
-                        loadRandomCat();
-                    } else if (section === 'breeds') {
-                        loadBreeds();
-                    } else if (section === 'favorites') {
-                        loadFavorites();
-                    }
-                });
-            });
+      function changeSlide(n) {
+        showSlides(slideIndex + n);
+      }
 
-            document.getElementById('breed-select').addEventListener('change', function() {
-                const breedId = this.value;
-                if (breedId) {
-                    loadBreedInfo(breedId);
-                }
-            });
+      function showSlides(n) {
+        const slides = document.getElementsByClassName("slide");
+        if (!slides.length) return;
 
-            document.querySelector('.love-button').addEventListener('click', () => {
-                if (currentImageUrl) {
-                    favoriteImages.push(currentImageUrl);
-                    alert('Added to favorites!');
-                }
-            });
+        // Update slideIndex
+        slideIndex = n;
+        if (slideIndex >= slides.length) slideIndex = 0;
+        if (slideIndex < 0) slideIndex = slides.length - 1;
 
-            document.querySelectorAll('.vote-button').forEach(button => {
-                button.addEventListener('click', () => {
-                    loadRandomCat();
-                });
+        // Hide all slides
+        Array.from(slides).forEach((slide) => {
+          slide.style.display = "none";
+          slide.classList.remove("active");
+        });
+
+        // Show current slide
+        slides[slideIndex].style.display = "block";
+        slides[slideIndex].classList.add("active");
+      }
+
+      // Love Button Handler
+      document
+        .getElementById("love-button")
+        .addEventListener("click", function () {
+          if (!currentImageId) return;
+
+          fetch("/cat/love", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              image_id: currentImageId,
+              sub_id: "user-123",
+            }),
+          })
+            .then((response) => {
+              if (!response.ok) throw new Error("Failed to add to favorites");
+              this.style.backgroundColor = "#ffecec";
+              return response.json();
+            })
+            .then(() => {
+              const message = document.createElement("div");
+              message.textContent = "Added to favorites!";
+              message.style.cssText =
+                "position: fixed; top: 20px; right: 20px; background: #4CAF50; color: white; padding: 10px 20px; border-radius: 5px; animation: fadeOut 2s forwards;";
+              document.body.appendChild(message);
+              setTimeout(() => message.remove(), 2000);
+            })
+            .catch((error) => {
+              console.error("Error adding to favorites:", error);
+              alert("Failed to add to favorites. Please try again.");
             });
         });
+
+      // Favorites Section Functions
+      function loadFavorites() {
+        fetch("/cat/favs")
+          .then((response) => {
+            if (!response.ok) throw new Error("Failed to load favorites");
+            return response.text();
+          })
+          .then((html) => {
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(html, "text/html");
+            const gallery = doc.querySelector(".gallery");
+            if (gallery) {
+              document.getElementById("favorites-gallery").innerHTML =
+                gallery.innerHTML;
+            }
+          })
+          .catch((error) => {
+            console.error("Error loading favorites:", error);
+            document.getElementById("favorites-gallery").innerHTML =
+              '<p class="error">Failed to load favorites. Please try again later.</p>';
+          });
+      }
+
+      // Add keydown event listener for slide navigation
+      document.addEventListener("keydown", function (e) {
+        if (
+          document.getElementById("breeds-section").classList.contains("active")
+        ) {
+          if (e.key === "ArrowLeft") {
+            changeSlide(-1);
+          } else if (e.key === "ArrowRight") {
+            changeSlide(1);
+          }
+        }
+      });
+
+      // Initial load
+      loadRandomCat();
     </script>
-</body>
+  </body>
 </html>
