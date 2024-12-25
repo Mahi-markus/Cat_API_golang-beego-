@@ -12,7 +12,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
 
     <style>
-      /* Previous styles remain the same */
       body {
         font-family: Arial, sans-serif;
         background-color: #f9f9f9;
@@ -57,7 +56,6 @@
         display: block;
       }
 
-      /* Voting Section Styles */
       .container {
         display: flex;
         flex-direction: column;
@@ -100,7 +98,6 @@
         background-color: #e0e0e0;
       }
 
-      /* Breeds Section Styles */
       .breed-select {
         width: 80%;
         max-width: 600px;
@@ -174,6 +171,7 @@
         left: 0;
         border-radius: 0 3px 3px 0;
       }
+
       .next {
         right: 0;
         border-radius: 3px 0 0 3px;
@@ -218,7 +216,6 @@
         background: #0056b3;
       }
 
-      /* Favorites Section Styles */
       .gallery {
         display: grid;
         grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -319,7 +316,6 @@
       </a>
     </div>
 
-    <!-- Voting Section -->
     <div id="voting-section" class="section active">
       <div class="container">
         <img
@@ -338,11 +334,10 @@
       </div>
     </div>
 
-    <!-- Breeds Section -->
     <div id="breeds-section" class="section">
       <div class="breed-select">
         <label for="breed">Choose a Breed:</label>
-        <select name="breed" id="breed">
+        <select name="id" id="breed" required>
           <option value="">-- Select Breed --</option>
           {{
             range.Breeds
@@ -355,26 +350,19 @@
       </div>
       <div id="breed-details" style="display: none">
         <div class="slideshow-container">
-          <div id="breed-slides">
-            <!-- Slides will be populated by JavaScript -->
-          </div>
+          <div id="breed-slides"></div>
           <a class="prev" onclick="changeSlide(-1)">&#10094;</a>
           <a class="next" onclick="changeSlide(1)">&#10095;</a>
         </div>
         <div class="breed-info">
-          <h2 id="breed-name">{{.BreedName}}</h2>
-          <p id="breed-description">{{.Description}}</p>
-          <p>
-            <strong>Origin:</strong> <span id="breed-origin">{{.Origin}}</span>
-          </p>
-          <a id="breed-wiki" href="{{.WikipediaURL}}" target="_blank"
-            >Learn More on Wikipedia</a
-          >
+          <h2 id="breed-name"></h2>
+          <p id="breed-description"></p>
+          <p><strong>Origin:</strong> <span id="breed-origin"></span></p>
+          <a id="breed-wiki" href="" target="_blank">Learn More on Wikipedia</a>
         </div>
       </div>
     </div>
 
-    <!-- Favorites Section -->
     <div id="favorites-section" class="section">
       <div id="favorites-gallery" class="gallery">
         {{ range.LovedImages }}
@@ -389,7 +377,6 @@
       let currentImageId = null;
       let slideIndex = 0;
 
-      // Navigation
       document.querySelectorAll(".nav a").forEach((link) => {
         link.addEventListener("click", function (e) {
           e.preventDefault();
@@ -405,25 +392,30 @@
           document.getElementById(`${section}-section`).classList.add("active");
 
           if (section === "voting") loadRandomCat();
+          if (section === "breeds") loadBreeds();
           if (section === "favorites") loadFavorites();
         });
       });
 
-      // Initialize Select2
       $(document).ready(function () {
-        $("#breed").select2();
+        try {
+          $("#breed").select2();
 
-        $("#breed").on("change", function () {
-          const breedId = this.value;
-          if (breedId) {
-            loadBreedImages(breedId);
-          } else {
-            document.getElementById("breed-details").style.display = "none";
-          }
-        });
+          $("#breed").on("change", function () {
+            const breedId = this.value;
+            if (breedId) {
+              loadBreedImages(breedId);
+            } else {
+              document.getElementById("breed-details").style.display = "none";
+            }
+          });
+
+          loadRandomCat();
+        } catch (error) {
+          console.error("Error initializing Select2:", error);
+        }
       });
 
-      // Voting Section Functions
       function loadRandomCat() {
         fetch("/cat1")
           .then((response) => {
@@ -471,37 +463,53 @@
           });
       }
 
-      // Breeds Section Functions
       function loadBreedImages(breedId) {
         fetch(`/cat/breed_images?id=${breedId}`)
           .then((response) => {
-            if (!response.ok) throw new Error("Failed to fetch breed data");
+            if (!response.ok) {
+              throw new Error(`HTTP error! status: ${response.status}`);
+            }
             return response.json();
           })
           .then((data) => {
+            // Debug the response
+            console.log("Breed data received:", data);
+
+            if (!data) {
+              throw new Error("No data received");
+            }
+
             // Update breed information
-            document.getElementById("breed-name").textContent = data.BreedName;
+            document.getElementById("breed-name").textContent =
+              data.BreedName || "";
             document.getElementById("breed-description").textContent =
-              data.Description;
-            document.getElementById("breed-origin").textContent = data.Origin;
-            document.getElementById("breed-wiki").href = data.WikipediaURL;
+              data.Description || "";
+            document.getElementById("breed-origin").textContent =
+              data.Origin || "";
+            document.getElementById("breed-wiki").href =
+              data.WikipediaURL || "#";
 
-            // Update slides
-            const slidesHTML = data.Images.map(
-              (image, index) => `
-              <div class="slide ${index === 0 ? "active" : ""}">
-                <img src="${image.url}" alt="${data.BreedName} cat">
-              </div>
-            `
-            ).join("");
+            // Check if Images exists and has items
+            if (data.Images && data.Images.length > 0) {
+              const slidesHTML = data.Images.map(
+                (image, index) => `
+          <div class="slide ${index === 0 ? "active" : ""}">
+            <img src="${image.url}" alt="${data.BreedName || "Cat"} image">
+          </div>
+        `
+              ).join("");
 
-            document.getElementById("breed-slides").innerHTML = slidesHTML;
-            document.getElementById("breed-details").style.display = "block";
-            slideIndex = 0;
-            showSlides(0);
+              document.getElementById("breed-slides").innerHTML = slidesHTML;
+              document.getElementById("breed-details").style.display = "block";
+              slideIndex = 0;
+              showSlides(0);
+            } else {
+              throw new Error("No images found for this breed");
+            }
           })
           .catch((error) => {
-            console.error("Error loading breed data:", error);
+            console.error("Error details:", error);
+            document.getElementById("breed-details").style.display = "none";
             alert("Failed to load breed information. Please try again.");
           });
       }
@@ -514,23 +522,19 @@
         const slides = document.getElementsByClassName("slide");
         if (!slides.length) return;
 
-        // Update slideIndex
         slideIndex = n;
         if (slideIndex >= slides.length) slideIndex = 0;
         if (slideIndex < 0) slideIndex = slides.length - 1;
 
-        // Hide all slides
         Array.from(slides).forEach((slide) => {
           slide.style.display = "none";
           slide.classList.remove("active");
         });
 
-        // Show current slide
         slides[slideIndex].style.display = "block";
         slides[slideIndex].classList.add("active");
       }
 
-      // Love Button Handler
       document
         .getElementById("love-button")
         .addEventListener("click", function () {
@@ -563,7 +567,25 @@
             });
         });
 
-      // Favorites Section Functions
+      function loadBreeds() {
+        fetch("/cat/breeds")
+          .then((response) => response.text())
+          .then((html) => {
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(html, "text/html");
+            const breedSelect = doc.querySelector("#breed");
+            if (breedSelect) {
+              document.querySelector("#breed").innerHTML =
+                breedSelect.innerHTML;
+              $("#breed").trigger("change.select2");
+            }
+          })
+          .catch((error) => {
+            console.error("Error loading breeds:", error);
+            alert("Failed to load breeds. Please try again.");
+          });
+      }
+
       function loadFavorites() {
         fetch("/cat/favs")
           .then((response) => {
@@ -586,7 +608,6 @@
           });
       }
 
-      // Add keydown event listener for slide navigation
       document.addEventListener("keydown", function (e) {
         if (
           document.getElementById("breeds-section").classList.contains("active")
@@ -598,9 +619,6 @@
           }
         }
       });
-
-      // Initial load
-      loadRandomCat();
     </script>
   </body>
 </html>

@@ -87,85 +87,87 @@ func (c *CatController) Home() {
 }
 
 func (c *CatController) Breeds() {
-	apiKey := loadAPIKey()
-	apiURL := "https://api.thecatapi.com/v1/breeds"
-	ch := make(chan []byte)
+    apiKey := loadAPIKey()
+    apiURL := "https://api.thecatapi.com/v1/breeds"
+    ch := make(chan []byte)
 
-	go fetchAPI(apiURL, apiKey, ch)
-	body := <-ch
-	if body == nil {
-		c.Ctx.WriteString("Failed to fetch breeds")
-		return
-	}
+    go fetchAPI(apiURL, apiKey, ch)
+    body := <-ch
+    if body == nil {
+        c.Ctx.WriteString("Failed to fetch breeds")
+        return
+    }
 
-	var breeds []CatBreed
-	err := json.Unmarshal(body, &breeds)
-	if err != nil {
-		c.Ctx.WriteString("Failed to parse response")
-		return
-	}
+    var breeds []CatBreed
+    err := json.Unmarshal(body, &breeds)
+    if err != nil {
+        c.Ctx.WriteString("Failed to parse response")
+        return
+    }
 
-	c.Data["Breeds"] = breeds
-	c.TplName = "single_page.tpl"
+    // Add some logging to verify data
+    fmt.Printf("Fetched %d breeds\n", len(breeds))
+    
+    c.Data["Breeds"] = breeds
+    c.TplName = "single_page.tpl"
 }
 
 
 
 func (c *CatController) BreedImages() {
-	apiKey := loadAPIKey()
-	breedID := c.GetString("id")
-	if breedID == "" {
-		c.Ctx.WriteString("Invalid breed ID")
-		return
-	}
+    breedID := c.GetString("id")
+    if breedID == "" {
+        c.Data["json"] = map[string]interface{}{"error": "Invalid breed ID"}
+        c.ServeJSON()
+        return
+    }
 
-	breedsCh := make(chan []byte)
-	imagesCh := make(chan []byte)
+    apiKey := loadAPIKey()
+    breedURL := fmt.Sprintf("https://api.thecatapi.com/v1/images/search?breed_ids=%s&limit=5", breedID)
+    
+    req, _ := http.NewRequest("GET", breedURL, nil)
+    req.Header.Add("x-api-key", apiKey)
+    
+    client := &http.Client{}
+    resp, err := client.Do(req)
+    if err != nil {
+        c.Data["json"] = map[string]interface{}{"error": "Failed to fetch images"}
+        c.ServeJSON()
+        return
+    }
+    defer resp.Body.Close()
 
-	// Concurrent API calls
-	go fetchAPI("https://api.thecatapi.com/v1/breeds", apiKey, breedsCh)
-	go fetchAPI(fmt.Sprintf("https://api.thecatapi.com/v1/images/search?breed_ids=%s&limit=5", breedID), apiKey, imagesCh)
+    var images []CatImage
+    if err := json.NewDecoder(resp.Body).Decode(&images); err != nil {
+        c.Data["json"] = map[string]interface{}{"error": "Failed to parse images"}
+        c.ServeJSON()
+        return
+    }
 
-	breedsBody := <-breedsCh
-	imagesBody := <-imagesCh
+    // Fetch breed details
+    breedResp, err := http.Get("https://api.thecatapi.com/v1/breeds/" + breedID)
+    if err != nil {
+        c.Data["json"] = map[string]interface{}{"error": "Failed to fetch breed info"}
+        c.ServeJSON()
+        return
+    }
+    defer breedResp.Body.Close()
 
-	if breedsBody == nil || imagesBody == nil {
-		c.Ctx.WriteString("Failed to fetch data")
-		return
-	}
+    var breed CatBreed
+    if err := json.NewDecoder(breedResp.Body).Decode(&breed); err != nil {
+        c.Data["json"] = map[string]interface{}{"error": "Failed to parse breed info"}
+        c.ServeJSON()
+        return
+    }
 
-	var breeds []CatBreed
-	err := json.Unmarshal(breedsBody, &breeds)
-	if err != nil {
-		c.Ctx.WriteString("Failed to parse breed information")
-		return
-	}
+    response := map[string]interface{}{
+        "BreedName": breed.Name,
+        "Description": breed.Description,
+        "Origin": breed.Origin,
+        "WikipediaURL": breed.WikipediaURL,
+        "Images": images,
+    }
 
-	var selectedBreed *CatBreed
-	for _, breed := range breeds {
-		if breed.ID == breedID {
-			selectedBreed = &breed
-			break
-		}
-	}
-
-	if selectedBreed == nil {
-		c.Ctx.WriteString("Breed not found")
-		return
-	}
-
-	var images []CatImage
-	err = json.Unmarshal(imagesBody, &images)
-	if err != nil {
-		c.Ctx.WriteString("Failed to parse image data")
-		return
-	}
-
-	c.Data["BreedName"] = selectedBreed.Name
-	c.Data["Origin"] = selectedBreed.Origin
-	c.Data["Description"] = selectedBreed.Description
-	c.Data["WikipediaURL"] = selectedBreed.WikipediaURL
-	c.Data["ID"] = selectedBreed.ID
-	c.Data["Images"] = images
-	c.TplName = "single_page.tpl"
+    c.Data["json"] = response
+    c.ServeJSON()
 }
