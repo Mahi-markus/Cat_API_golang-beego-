@@ -19,7 +19,7 @@ body {
     color: #333;
     font-weight: bold;
     font-size: 16px;
-    padding: 10px 20px;
+    padding: 5px 10px;
     transition: color 0.3s, background-color 0.3s;
     border-radius: 5px;
     cursor: pointer;
@@ -59,7 +59,7 @@ body {
     height: 300px;
     object-fit: cover;
     border-radius: 10px;
-    margin-bottom: 20px;
+    margin-bottom: 10px;
   }
 
   .button-row {
@@ -254,3 +254,6 @@ body {
       width: 90%;
     }
   }
+
+
+  

@@ -111,7 +111,7 @@
         {{ range.LovedImages }}
         <img src="{{.}}" alt="Loved Cat Image" />
         {{else}}
-        <p>No loved images yet.</p>
+        <p>No image voted</p>
         {{ end }}
       </div>
     </div>
