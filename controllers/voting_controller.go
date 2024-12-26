@@ -128,31 +128,31 @@ func (c *VotingController) AddFavorite() {
     c.ServeJSON()
 }
 
-func (c *VotingController) DeleteFavorite() {
-	favoriteID := c.Ctx.Input.Param(":favoriteId")
+// func (c *VotingController) DeleteFavorite() {
+// 	favoriteID := c.Ctx.Input.Param(":favoriteId")
 
-	url := fmt.Sprintf("https://api.thecatapi.com/v1/favourites/%s", favoriteID)
-	apiKey, err := web.AppConfig.String("cat_api_key")
-	if err != nil {
-		c.Data["json"] = map[string]string{"error": "Failed to get API key"}
-		c.ServeJSON()
-		return
-	}
+// 	url := fmt.Sprintf("https://api.thecatapi.com/v1/favourites/%s", favoriteID)
+// 	apiKey, err := web.AppConfig.String("cat_api_key")
+// 	if err != nil {
+// 		c.Data["json"] = map[string]string{"error": "Failed to get API key"}
+// 		c.ServeJSON()
+// 		return
+// 	}
 
-	responseChan := makeAPICall("DELETE", url, nil, apiKey)
+// 	responseChan := makeAPICall("DELETE", url, nil, apiKey)
 
-	response := <-responseChan
-	if response.Error != nil {
-		logs.Error("Failed to delete favorite:", response.Error)
-		c.Ctx.Output.SetStatus(500)
-		c.Data["json"] = map[string]string{"error": "Failed to delete favorite"}
-		c.ServeJSON()
-		return
-	}
+// 	response := <-responseChan
+// 	if response.Error != nil {
+// 		logs.Error("Failed to delete favorite:", response.Error)
+// 		c.Ctx.Output.SetStatus(500)
+// 		c.Data["json"] = map[string]string{"error": "Failed to delete favorite"}
+// 		c.ServeJSON()
+// 		return
+// 	}
 
-	c.Data["json"] = map[string]string{"message": "Favorite deleted successfully"}
-	c.ServeJSON()
-}
+// 	c.Data["json"] = map[string]string{"message": "Favorite deleted successfully"}
+// 	c.ServeJSON()
+// }
 
 func (c *VotingController) Vote() {
 	var req VoteRequest

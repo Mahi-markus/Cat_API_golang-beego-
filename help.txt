@@ -237,3 +237,10 @@ curl -X POST http://localhost:8080/cat/vote      -H "Content-Type: application/j
            "sub_id": "user-123",
            "value": 1
          }'
+.....................................................
+go test ./tests -v
+
+
+go test ./tests -v -coverprofile=coverage.out
+go tool cover -func=coverage.out
+go tool cover -html=coverage.out
