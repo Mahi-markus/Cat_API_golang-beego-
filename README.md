@@ -2,6 +2,14 @@
 
 This project is a Beego-based Golang application that interacts with [TheCatAPI](https://thecatapi.com/). The application allows fetching cat images, managing liked images, and handling votes.
 
+## Features
+
+- Fetch cat images from TheCatAPI
+- Like and Dislike favorite cat images
+- favourtie functionality for cat images
+
+
+
 ## Prerequisites
 
 - **Install Go**: Ensure Go is installed on your system. [Download Go](https://golang.org/dl/).
@@ -41,9 +49,9 @@ This project is a Beego-based Golang application that interacts with [TheCatAPI]
     - `GOPATH`: Your workspace directory.
     - `PATH`: Add `$GOPATH/bin` to your `PATH`.
 
-### Step 2: Initialize the Project
+### Step 2: Initialize the Project in the specific directory ( Home/go)
 
-1. Create a new directory for the project and initialize it:
+1. Create a new directory for the project in the Home/go and initialize it:
     ```bash
     mkdir beego-project && cd beego-project
     go mod init beego-project
@@ -103,17 +111,4 @@ To test the application, open another terminal and run the following commands:
     go test -coverprofile coverage.out ./...
     go tool cover -html coverage.out
     ```
-
-## Features
-
-- Fetch cat images from TheCatAPI
-- Like and manage favorite cat images
-- Voting functionality for cat images
-
-## License
-This project is licensed under the MIT License. See the LICENSE file for details.
-
----
-
-### Happy Coding!
 
