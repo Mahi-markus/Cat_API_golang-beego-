@@ -79,17 +79,17 @@ func (m *MockTransport) AddMockResponse(url string, response string, statusCode 
 func createTestContext(method, url string, body []byte) (*web.Controller, *httptest.ResponseRecorder) {
 	r := httptest.NewRequest(method, url, bytes.NewReader(body))
 	w := httptest.NewRecorder()
-	
+
 	ctx := context.NewContext()
 	ctx.Reset(w, r)
 	ctx.Request = r
 	ctx.ResponseWriter = &context.Response{
 		ResponseWriter: w,
 	}
-	
+
 	controller := &web.Controller{}
 	controller.Init(ctx, "", "", nil)
-	
+
 	return controller, w
 }
 
@@ -109,10 +109,10 @@ func TestMain(m *testing.M) {
 	}
 
 	web.BConfig.WebConfig.ViewsPath = "views"
-	
+
 	// Run tests
 	code := m.Run()
-	
+
 	// Cleanup
 	os.RemoveAll("conf")
 	os.RemoveAll("views")
@@ -144,6 +144,16 @@ func TestAddFavorite(t *testing.T) {
 			requestBody:    `{"sub_id":"test-sub"}`,
 			expectedStatus: http.StatusBadRequest,
 		},
+		{
+			name:           "Empty Request Body",
+			requestBody:    ``,
+			expectedStatus: http.StatusBadRequest,
+		},
+		{
+			name:           "Invalid JSON Structure",
+			requestBody:    `{"image_id": 123, "sub_id": "test-sub"}`,
+			expectedStatus: http.StatusBadRequest,
+		},
 	}
 
 	for _, tt := range tests {
@@ -160,7 +170,7 @@ func TestAddFavorite(t *testing.T) {
 			controller := &controllers.VotingController{}
 			baseCtrl, w := createTestContext("POST", "/v1/favorites", []byte(tt.requestBody))
 			controller.Controller = *baseCtrl
-			
+
 			controller.AddFavorite()
 
 			assert.Equal(t, tt.expectedStatus, w.Code)
@@ -181,9 +191,9 @@ func TestGetFavorites(t *testing.T) {
 	controller := &controllers.FavoritesController{}
 	baseCtrl, _ := createTestContext("GET", "/v1/favorites", nil)
 	controller.Controller = *baseCtrl
-	
+
 	controller.GetFavorites()
-	
+
 	assert.Equal(t, "single_page.tpl", controller.TplName)
 }
 
@@ -200,9 +210,9 @@ func TestHome(t *testing.T) {
 	controller := &controllers.CatController{}
 	baseCtrl, _ := createTestContext("GET", "/", nil)
 	controller.Controller = *baseCtrl
-	
+
 	controller.Home()
-	
+
 	assert.Equal(t, "single_page.tpl", controller.TplName)
 }
 
@@ -219,9 +229,9 @@ func TestBreeds(t *testing.T) {
 	controller := &controllers.CatController{}
 	baseCtrl, _ := createTestContext("GET", "/breeds", nil)
 	controller.Controller = *baseCtrl
-	
+
 	controller.Breeds()
-	
+
 	assert.Equal(t, "single_page.tpl", controller.TplName)
 }
 
@@ -245,17 +255,77 @@ func TestBreedImages(t *testing.T) {
 	controller := &controllers.CatController{}
 	baseCtrl, w := createTestContext("GET", "/breed-images?id=abys", nil)
 	controller.Controller = *baseCtrl
-	
+
 	controller.BreedImages()
-	
+
 	assert.Equal(t, http.StatusOK, w.Code)
+}
+
+// TestVotingController_Vote sets up the test for the Vote method
+func TestVotingController_Vote(t *testing.T) {
+	tests := []struct {
+		name           string
+		requestBody    string
+		mockResponse   string
+		mockStatusCode int
+		expectedStatus int
+	}{
+		{
+			name:           "Success",
+			requestBody:    `{"image_id":"test-image","sub_id":"test-sub"}`,
+			mockResponse:   `{"id": 123, "message": "Vote submitted successfully"}`,
+			mockStatusCode: http.StatusOK,
+			expectedStatus: http.StatusOK,
+		},
+		{
+			name:           "Invalid Request Body",
+			requestBody:    `invalid json`,
+			expectedStatus: http.StatusBadRequest,
+		},
+		{
+			name:           "Missing Image ID",
+			requestBody:    `{"sub_id":"test-sub"}`,
+			expectedStatus: http.StatusBadRequest,
+		},
+		{
+			name:           "Empty Request Body",
+			requestBody:    ``,
+			expectedStatus: http.StatusBadRequest,
+		},
+		{
+			name:           "Invalid JSON Structure",
+			requestBody:    `{"image_id": 123, "sub_id": "test-sub"}`,
+			expectedStatus: http.StatusBadRequest,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			mockTransport := NewMockTransport()
+			mockTransport.AddMockResponse(
+				"https://api.thecatapi.com/v1/votes",
+				tt.mockResponse,
+				tt.mockStatusCode,
+				nil,
+			)
+			http.DefaultClient.Transport = mockTransport
+
+			controller := &controllers.VotingController{}
+			baseCtrl, w := createTestContext("POST", "/v1/votes", []byte(tt.requestBody))
+			controller.Controller = *baseCtrl
+
+			controller.Vote()
+
+			assert.Equal(t, tt.expectedStatus, w.Code)
+		})
+	}
 }
 
 func TestMainController(t *testing.T) {
 	controller := &controllers.MainController{}
 	baseCtrl, _ := createTestContext("GET", "/", nil)
 	controller.Controller = *baseCtrl
-	
+
 	controller.Get()
 
 	assert.Equal(t, "beego.vip", controller.Data["Website"])
