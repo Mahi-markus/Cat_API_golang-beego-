@@ -25,7 +25,7 @@ body {
     cursor: pointer;
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 4px;
   }
 
   .nav a.active {
