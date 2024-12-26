@@ -49,12 +49,14 @@ This project is a Beego-based Golang application that interacts with [TheCatAPI]
     - `GOPATH`: Your workspace directory.
     - `PATH`: Add `$GOPATH/bin` to your `PATH`.
 
-### Step 2: Initialize the Project in the specific directory ( Home/go)
+### Step 2: Initialize the Project in the specific directory ( Home)
 
-1. Create a new directory for the project in the Home/go and initialize it:
+1. Create a new directory in the Home (a folder named "go") for the project :
+   - open terminal in the go folder
     ```bash
-    mkdir beego-project && cd beego-project
-    go mod init beego-project
+    mkdir src
+    cd src
+    go mod init src
     ```
 
 ### Step 3: Install Beego
@@ -92,6 +94,8 @@ go get github.com/beego/beego/v2
 
 1. Start the application:
     ```bash
+    cd Cat_API_golang-beego-
+    go mod tidy
     bee run
     ```
 2. Open the application in your browser:
@@ -99,7 +103,7 @@ go get github.com/beego/beego/v2
 
 ## Testing
 
-To test the application, open another terminal and run the following commands:
+To test the application, open another terminal inside the "Cat_API_golang-beego-" folder and run the following commands:
 
 1. Run all tests:
     ```bash
@@ -112,3 +116,11 @@ To test the application, open another terminal and run the following commands:
     go tool cover -html coverage.out
     ```
 
+**after  this below command:**
+```bash
+go tool cover -html coverage.out
+```
+
+**you will show a html file if it does any problem in mozila (file not found)**
+just copy the url and paste it in the chrome , you will see the coverage.
+the test coverage will vary for each controller.
