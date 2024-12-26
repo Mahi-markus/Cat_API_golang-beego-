@@ -101,7 +101,7 @@ my-beego-app/controllers/breed_controller.go:100.2,102.16 3 1
 my-beego-app/controllers/breed_controller.go:102.16,105.3 2 0
 my-beego-app/controllers/breed_controller.go:108.2,111.31 3 1
 my-beego-app/controllers/breed_controller.go:114.39,116.19 2 1
-my-beego-app/controllers/breed_controller.go:116.19,120.3 3 0
+my-beego-app/controllers/breed_controller.go:116.19,120.3 3 1
 my-beego-app/controllers/breed_controller.go:122.2,130.16 7 1
 my-beego-app/controllers/breed_controller.go:130.16,134.3 3 0
 my-beego-app/controllers/breed_controller.go:135.2,138.67 3 1
@@ -150,8 +150,8 @@ my-beego-app/controllers/voting_controller.go:109.30,115.6 5 0
 my-beego-app/controllers/voting_controller.go:117.5,120.55 2 1
 my-beego-app/controllers/voting_controller.go:120.55,125.6 4 0
 my-beego-app/controllers/voting_controller.go:127.5,128.18 2 1
-my-beego-app/controllers/voting_controller.go:157.35,159.70 2 0
-my-beego-app/controllers/voting_controller.go:159.70,163.3 3 0
+my-beego-app/controllers/voting_controller.go:157.35,159.70 2 1
+my-beego-app/controllers/voting_controller.go:159.70,163.3 3 1
 my-beego-app/controllers/voting_controller.go:165.2,167.16 3 0
 my-beego-app/controllers/voting_controller.go:167.16,171.3 3 0
 my-beego-app/controllers/voting_controller.go:173.2,177.27 4 0
