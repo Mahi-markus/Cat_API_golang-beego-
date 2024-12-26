@@ -1,2 +1,62 @@
+# Binaries for programs and plugins
+*.exe
+*.dll
+*.so
+*.dylib
+
+# Go build artifacts
+*.o
+*.a
+*.out
+
+# Packages
+vendor/
+
+# Beego log files
+logs/
+*.log
+
+# GoLand project files
+.idea/
+*.iml
+
+# Dependency files
+bin/
+*.test
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# Environment files
 .env
-.env/
+.env.local
+
+# Temporary files
+*.tmp
+*.swp
+
+# Build cache
+/build/
+.cache/
+
+# Coverage files
+*.cover
+*.cov
+
+# Generated files
+swagger/
+docs/
+
+# Docker
+docker-compose.override.yml
+.dockerignore
+
+# Test results
+*.prof
+*.trace
+
+# Miscellaneous
+*.bak
+*.old
+*.orig
