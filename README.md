@@ -124,3 +124,7 @@ go tool cover -html coverage.out
 **you will show a html file if it does any problem in mozila (file not found)**
 just copy the url and paste it in the chrome , you will see the coverage.
 the test coverage will vary for each controller.
+
+
+**special instruction**
+- if the dropdown for breed doesnt show any breeds name, just click another time and you will see the breeds name properly.
